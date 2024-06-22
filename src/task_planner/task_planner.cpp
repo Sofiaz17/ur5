@@ -70,6 +70,7 @@ int main(int argc, char **argv)
 	/// Vision Node
 
 	if(debug_mode) ROS_INFO("%s Vision phase", info_name);
+	ROS_INFO("%s Vision phase", info_name);
 
 	//get_bounding_boxes_service.request is empty
 
@@ -106,6 +107,7 @@ int main(int argc, char **argv)
 	/// Desired Poses Node
 
 	if(debug_mode) ROS_INFO("%s Retrieving desired poses", info_name);
+	ROS_INFO("%s Retrieving desired poses", info_name);
 
 	// get_esired_poses_service.request is empty
 
@@ -124,6 +126,7 @@ int main(int argc, char **argv)
 	/// Motion Planner
 
 	if(debug_mode) ROS_INFO("%s Motion planning phase", info_name);
+	ROS_INFO("%s Motion planning phase", info_name);
 
 	/**actual_poses.push_back<ur5::TargetPose());
 	actual_poses.at(0).label = "X1-Y1-Z2";

@@ -11,7 +11,7 @@
     <!-- <node pkg="ur5" type="desired_poses_params.py" name="desired_poses_params" output="screen"/> -->
 
     <node pkg="ur5" type="task_planner" name="task_planner" output="screen"/>
-    <!-- <node pkg="ur5" type="robot_controller" name="robot_controller" output="screen"/>
-    <node pkg="ur5" type="motion_planner" name="motion_planner" output="screen"/> -->
+    <node pkg="ur5" type="robot_controller" name="robot_controller" output="screen"/>
+    <node pkg="ur5" type="motion_planner" name="motion_planner" output="screen"/>
   </group>
 </launch>

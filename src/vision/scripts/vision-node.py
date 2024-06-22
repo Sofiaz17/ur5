@@ -72,6 +72,7 @@ from vision.msg import block
 from pathlib import Path
 import sys
 import os
+import rospkg
 import copy
 import numpy as np
 import cv2 as cv
@@ -125,12 +126,12 @@ icp_threshold = 0.004
 debug = False
 info_name = "[vision_node]:"
 
-print('REGION OF INTEREST DEBUG')
-print(dir(roi))
-print('REGION __FILE__')
-print(roi.__file__)
-print('BLOCK DETECTION DEBUG')
-print(dir(Lego))
+# print('REGION OF INTEREST DEBUG')
+# print(dir(roi))
+# print('REGION __FILE__')
+# print(roi.__file__)
+# print('BLOCK DETECTION DEBUG')
+# print(dir(Lego))
 
 
 
@@ -224,16 +225,37 @@ def visualize_point_cloud(pcd):
     o3d.visualization.draw_geometries([pcd])
 
 
-# Loading Mesh model of the block having a specific label
+#Loading Mesh model of the block having a specific label
+# def load_mesh_model(block_label):
+
+#     file_path = '/home/sofia_unix/catkin_ws/src/ur5/src/vision/scripts/models'+block_label+'/mesh/'+block_label+'.stl'
+#     #mesh = o3d.io.read_triangle_mesh('models/'+block_label+'/mesh/'+block_label+'.stl').sample_points_poisson_disk(6138)
+#     #mesh = o3d.io.read_triangle_mesh('/home/sofia_unix/catkin_ws/src/ur5/src/vision/scripts/models'+block_label+'/mesh/'+block_label+'.stl').sample_points_poisson_disk(6138)
+#     #mesh = o3d.io.read_triangle_mesh("models/X1-Y4-Z2/mesh/X1-Y4-Z2.stl").sample_points_poisson_disk(6138)
+#     mesh = o3d.io.read_triangle_mesh(file_path).sample_points_poisson_disk(6138)
+#     #rospy.loginfo(f"Number of vertices: {len(mesh.vertices)}")
+#     #rospy.loginfo(f"Number of triangles: {len(mesh.triangles)}")
+    
+
+#     #o3d.visualization.draw_geometries([mesh])
+#     return mesh
+
 def load_mesh_model(block_label):
-    mesh = o3d.io.read_triangle_mesh('models/'+block_label+'/mesh/'+block_label+'.stl')
-    rospy.loginfo(f"Number of vertices: {len(mesh.vertices)}")
-    rospy.loginfo(f"Number of triangles: {len(mesh.triangles)}")
-    mesh.sample_points_poisson_disk(6138)
+    # Adjust this path to the correct directory where your STL files are stored
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    stl_file_path = os.path.join(script_dir, 'models/'+block_label+'/mesh/'+block_label+'.stl')
+    print(f"STL FILE PATH: {stl_file_path}")
+    
+    if not os.path.isfile(stl_file_path):
+        raise FileNotFoundError(f"STL file not found: {stl_file_path}")
+    
+    mesh = o3d.io.read_triangle_mesh(stl_file_path)
+    
+    if mesh.is_empty():
+        raise ValueError(f"Loaded mesh is empty: {stl_file_path}")
+    
+    return mesh.sample_points_poisson_disk(6138)
 
-    #o3d.visualization.draw_geometries([mesh])
-
-    return mesh
 
 
 def execute_icp(source, target, threshold):
