@@ -3,7 +3,7 @@
 #include "ros/ros.h"
 
 #include "ur5/MoveBlock.h"
-#include "ur5/TargetPose.h"
+#include "ur5/BlockParams.h"
 #include "sensor_msgs/JointState.h"
 
 #include "ur5/MoveRobot.h"

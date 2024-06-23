@@ -1,14 +1,11 @@
 
 #include "ros/ros.h"
 
-#include "ur5/GetBoundingBoxes.h"
-#include "ur5/BoundingBoxesToPoses.h"
+
 #include "ur5/GetDesiredPoses.h"
 #include "ur5/MoveBlock.h"
 #include "ur5/GetBrickPose.h"
 
-#include "ur5/TargetPose.h"
-#include "ur5/BoundingBox.h"
 #include "ur5/BlockParams.h"
 
 #include <eigen3/Eigen/Core>
@@ -58,7 +55,7 @@ int main(int argc, char **argv)
 	std::vector<ur5::BlockParams> desired_poses;
 	std::vector<ur5::BlockParams> actual_poses;
 
-	// ros::ServiceClient vision_node1 = node.serviceClient<ur5::GetBoundingBoxes>("get_bounding_boxes");
+
 	// ros::ServiceClient vision_node = node.serviceClient<ur5::GetBrickPose>("get_brick_pose");
 	ros::ServiceClient desired_poses_node = node.serviceClient<ur5::GetDesiredPoses>("get_desired_poses");
 	ros::ServiceClient motion_planner = node.serviceClient<ur5::MoveBlock>("move_block");
@@ -114,11 +111,11 @@ int main(int argc, char **argv)
 
 //Roll pitch and yaw in Radians
 float roll = 0, pitch = 0, yaw = 0.5236;    
-Quaternionf q;
-q = AngleAxisf(roll, Vector3f::UnitX())
+Quaternionf qa;
+qa = AngleAxisf(roll, Vector3f::UnitX())
     * AngleAxisf(pitch, Vector3f::UnitY())
     * AngleAxisf(yaw, Vector3f::UnitZ());
-std::cout << "Quaternion" << std::endl << q.coeffs() << std::endl;
+std::cout << "Quaternion" << std::endl << qa.coeffs() << std::endl;
 
 	
   	// ur5::BlockParams block;
@@ -135,14 +132,26 @@ std::cout << "Quaternion" << std::endl << q.coeffs() << std::endl;
 
 
 	actual_poses.push_back(ur5::BlockParams());
-	actual_poses.at(0).label = "X1-Y1-Z2";
+	actual_poses.at(0).label = "X1-Y4-Z2";
 	actual_poses.at(0).pose.position.x = 0.4;
 	actual_poses.at(0).pose.position.y = 0.4;
 	actual_poses.at(0).pose.position.z = 0.87;
-	actual_poses.at(0).pose.orientation.x = q.x();
-	actual_poses.at(0).pose.orientation.y = q.y();
-	actual_poses.at(0).pose.orientation.z = q.z();
-	actual_poses.at(0).pose.orientation.w = q.w();
+	actual_poses.at(0).pose.orientation.x = qa.x();
+	actual_poses.at(0).pose.orientation.y = qa.y();
+	actual_poses.at(0).pose.orientation.z = qa.z();
+	actual_poses.at(0).pose.orientation.w = qa.w();
+
+
+
+  	// desired_poses.push_back(ur5::BlockParams());
+	// desired_poses.at(0).label = "X1-Y4-Z2";
+	// desired_poses.at(0).pose.position.x = -0.1;
+	// desired_poses.at(0).pose.position.y = 0.35;
+	// desired_poses.at(0).pose.position.z = 0.87;
+	// desired_poses.at(0).pose.orientation.x = qa.x();
+	// desired_poses.at(0).pose.orientation.y = qa.y();
+	// desired_poses.at(0).pose.orientation.z = qa.z();
+	// desired_poses.at(0).pose.orientation.w = qa.w();
 
 	/// Desired Poses Node
 
