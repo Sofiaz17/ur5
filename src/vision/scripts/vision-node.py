@@ -705,15 +705,15 @@ if __name__ == '__main__':
     point_cloud_sub = rospy.Subscriber("/ur5/zed_node/point_cloud/cloud_registered", PointCloud2, find_pose, queue_size=1)   # Subscriber Point cloud
     
     # rospy.wait_for_message("/ur5/zed_node/left_raw/image_raw_color", Image)
-    #rospy.wait_for_message("/ur5/zed_node/point_cloud/cloud_registered", PointCloud2)
-    ts = message_filters.TimeSynchronizer([img_sub, point_cloud_sub], 10)
-    ts.registerCallback(get_img, find_pose)
+    # #rospy.wait_for_message("/ur5/zed_node/point_cloud/cloud_registered", PointCloud2)
+    # ts = message_filters.TimeSynchronizer([img_sub, point_cloud_sub], 10)
+    # ts.registerCallback(get_img, find_pose)
 
-    rospy.loginfo('VISION: before waiting for messages')
+    # rospy.loginfo('VISION: before waiting for messages')
 
-    # Block until the first messages are received
-    rospy.wait_for_message("/ur5/zed_node/left_raw/image_raw_color", Image)
-    rospy.wait_for_message("/ur5/zed_node/point_cloud/cloud_registered", PointCloud2)
+    # # Block until the first messages are received
+    # rospy.wait_for_message("/ur5/zed_node/left_raw/image_raw_color", Image)
+    # rospy.wait_for_message("/ur5/zed_node/point_cloud/cloud_registered", PointCloud2)
    
     # get_brick_pose_server()
     
