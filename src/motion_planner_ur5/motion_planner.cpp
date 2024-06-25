@@ -29,9 +29,9 @@ Matrix4d base_to_world()
 {
     Matrix4d roto_trasl_matrix;
     roto_trasl_matrix << 1, 0, 0, 0.5,
-        0, -1, 0, 0.35,
-        0, 0, -1, 1.75,
-        0, 0, 0, 1;
+                        0, -1, 0, 0.35,
+                        0, 0, -1, 1.75,
+                        0, 0, 0, 1;
     return roto_trasl_matrix;
 };
 

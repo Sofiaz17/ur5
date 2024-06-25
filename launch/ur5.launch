@@ -5,8 +5,7 @@
   <param name="update_rate" type="double" value="1000.0"/>
 
   <group ns="ur5">
-    <!-- <node pkg="ur5" type="vision-node.py" name="vision_node" output="screen"/> -->
-    <!-- <node pkg="ur5" type="pointcloud_node.py" name="pointcloud_node" output="screen"/> -->
+    <node pkg="ur5" type="vision-node.py" name="vision_node" output="screen"/>
     <node pkg="ur5" type="desired_poses_node.py" name="desired_poses_node" output="screen"/>
     <!-- <node pkg="ur5" type="desired_poses_params.py" name="desired_poses_params" output="screen"/> -->
 

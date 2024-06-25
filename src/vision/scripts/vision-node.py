@@ -183,6 +183,8 @@ def get_img(img):
     global can_take_point_cloud
     global block_list
 
+    print('VISION: in get_img')
+
     if can_acquire_img:
         try:
             cv_obj = bridge.imgmsg_to_cv2(img, "bgr8")      # convert image to cv2 obj
@@ -450,7 +452,7 @@ def rotate_point_cloud_about_axis(pcd, rotation_vector):
 
 # Operation to get and elaborate point cloud of blocks
 def find_pose(point_cloud):
-    # @Description Callback function to collect point cloud and estimate center and pose of each block detected
+        # @Description Callback function to collect point cloud and estimate center and pose of each block detected
     # @Parameters point cloud from zed node
 
     global can_take_point_cloud
@@ -459,6 +461,8 @@ def find_pose(point_cloud):
     global icp_threshold
     global voxel_size
     global debug
+
+    print('VISION: in find_pose')
 
     if can_take_point_cloud:
 
@@ -473,7 +477,7 @@ def find_pose(point_cloud):
             point_cloud_box = []
             for x in range(int(block.x1), int(block.x2)):
                 for y in range(int(block.y1), int(block.y2)):
-                        points = point_cloud2.read_points(point_cloud, field_names=['x', 'y', 'z'],
+                        points =  point_cloud2.read_points(point_cloud, field_names=['x', 'y', 'z'],
                                                           uvs=[(int(x), int(y))], skip_nans=True)
                         for point in points:
                             point_cloud_box.append(np.array(point))
@@ -584,6 +588,8 @@ def msg_pub(request):
     #if send_next_msg:
     global block_list
 
+    print('VISION: in msg_pub')
+
     #msg = block()
     #q = to_quaternions(msg.roll, msg.pitch, msg.yaw)
        # if len(block_list) > 0:
@@ -689,15 +695,40 @@ def get_brick_pose_server():
 
 
 if __name__ == '__main__':
-
+    rospy.init_node('vision_node')
+    print('VISION: in main')
     # Publishers
     #pub = rospy.Publisher('vision/position', block, queue_size=1)          # Vision msg publisher
 
     # Subscribers
     img_sub = rospy.Subscriber("/ur5/zed_node/left_raw/image_raw_color", Image, get_img)
     point_cloud_sub = rospy.Subscriber("/ur5/zed_node/point_cloud/cloud_registered", PointCloud2, find_pose, queue_size=1)   # Subscriber Point cloud
+    
+    # rospy.wait_for_message("/ur5/zed_node/left_raw/image_raw_color", Image)
+    #rospy.wait_for_message("/ur5/zed_node/point_cloud/cloud_registered", PointCloud2)
+    ts = message_filters.TimeSynchronizer([img_sub, point_cloud_sub], 10)
+    ts.registerCallback(get_img, find_pose)
+
+    rospy.loginfo('VISION: before waiting for messages')
+
+    # Block until the first messages are received
+    rospy.wait_for_message("/ur5/zed_node/left_raw/image_raw_color", Image)
+    rospy.wait_for_message("/ur5/zed_node/point_cloud/cloud_registered", PointCloud2)
+   
+    # get_brick_pose_server()
+    
+
+    
+    rate = rospy.Rate(10)  # 10hz
+    print('VISION: before service')
+    service = rospy.Service("get_brick_pose", GetBrickPose, msg_pub)
     rospy.loginfo("%s vision_node is ready!", info_name)
-    get_brick_pose_server()
+    try:
+        rospy.spin()
+        print('rospy.spin success')
+    except rospy.ROSInterruptException:
+        print('rospy.spin failed')
+        pass
     # #rospy.init_node('block_detector', anonymous=True)
     # rospy.init_node('vision_node')
    

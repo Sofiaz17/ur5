@@ -90,8 +90,8 @@ bool move_block_handler(ur5::MoveBlock::Request &req, ur5::MoveBlock::Response &
 	std::vector<double> desired_joints(JOINT_SIZE);
 	
 	Path joint_path;
-	std::vector<Vector3d> via_points_positions(VIA_POINTS_NUMBER);
-	std::vector<Quaterniond> via_points_quaternions(VIA_POINTS_NUMBER);
+	std::vector<Vector3d> intermediate_pos(VIA_POINTS_NUMBER);
+	std::vector<Quaterniond> intermediate_quat(VIA_POINTS_NUMBER);
 
 	ROS_INFO("%s Moving block \"%s\"...", info_name, req.start_pose.label.c_str());
 
@@ -107,37 +107,37 @@ bool move_block_handler(ur5::MoveBlock::Request &req, ur5::MoveBlock::Response &
 	adjust_block_orientation.z() = 0.0;
 	adjust_block_orientation.w() = 0.0;
 	
-	via_points_positions.at(1) << req.start_pose.pose.position.x, req.start_pose.pose.position.y, req.start_pose.pose.position.z + Z_GRIP;
-	via_points_quaternions.at(1).x() = req.start_pose.pose.orientation.x;
-	via_points_quaternions.at(1).y() = req.start_pose.pose.orientation.y;
-	via_points_quaternions.at(1).z() = req.start_pose.pose.orientation.z;
-	via_points_quaternions.at(1).w() = req.start_pose.pose.orientation.w;
-	via_points_quaternions.at(1) = via_points_quaternions.at(1) * adjust_block_orientation;
+	intermediate_pos.at(1) << req.start_pose.pose.position.x, req.start_pose.pose.position.y, req.start_pose.pose.position.z + Z_GRIP;
+	intermediate_quat.at(1).x() = req.start_pose.pose.orientation.x;
+	intermediate_quat.at(1).y() = req.start_pose.pose.orientation.y;
+	intermediate_quat.at(1).z() = req.start_pose.pose.orientation.z;
+	intermediate_quat.at(1).w() = req.start_pose.pose.orientation.w;
+	intermediate_quat.at(1) = intermediate_quat.at(1) * adjust_block_orientation;
 	
-	via_points_positions.at(0) = via_points_positions.at(1) + Vector3d(0.0,0.0,Z_APPROACH);
-	via_points_quaternions.at(0) = via_points_quaternions.at(1);
+	intermediate_pos.at(0) = intermediate_pos.at(1) + Vector3d(0.0,0.0,Z_APPROACH);
+	intermediate_quat.at(0) = intermediate_quat.at(1);
 	
-	via_points_positions.at(2) = via_points_positions.at(0);
-	via_points_quaternions.at(2) = via_points_quaternions.at(0);
+	intermediate_pos.at(2) = intermediate_pos.at(0);
+	intermediate_quat.at(2) = intermediate_quat.at(0);
 	
-	via_points_positions.at(4) << req.end_pose.pose.position.x, req.end_pose.pose.position.y, req.end_pose.pose.position.z + Z_GRIP;
-	via_points_quaternions.at(4).x() = req.end_pose.pose.orientation.x;
-	via_points_quaternions.at(4).y() = req.end_pose.pose.orientation.y;
-	via_points_quaternions.at(4).z() = req.end_pose.pose.orientation.z;
-	via_points_quaternions.at(4).w() = req.end_pose.pose.orientation.w;
-	via_points_quaternions.at(4) = via_points_quaternions.at(4) * adjust_block_orientation;
+	intermediate_pos.at(4) << req.end_pose.pose.position.x, req.end_pose.pose.position.y, req.end_pose.pose.position.z + Z_GRIP;
+	intermediate_quat.at(4).x() = req.end_pose.pose.orientation.x;
+	intermediate_quat.at(4).y() = req.end_pose.pose.orientation.y;
+	intermediate_quat.at(4).z() = req.end_pose.pose.orientation.z;
+	intermediate_quat.at(4).w() = req.end_pose.pose.orientation.w;
+	intermediate_quat.at(4) = intermediate_quat.at(4) * adjust_block_orientation;
 	
-	via_points_positions.at(3) = via_points_positions.at(4) + Vector3d(0.0,0.0,Z_APPROACH);
-	via_points_quaternions.at(3) = via_points_quaternions.at(4);
+	intermediate_pos.at(3) = intermediate_pos.at(4) + Vector3d(0.0,0.0,Z_APPROACH);
+	intermediate_quat.at(3) = intermediate_quat.at(4);
 	
-	via_points_positions.at(5) = via_points_positions.at(3);
-	via_points_quaternions.at(5) = via_points_quaternions.at(3);
+	intermediate_pos.at(5) = intermediate_pos.at(3);
+	intermediate_quat.at(5) = intermediate_quat.at(3);
 	
 	
 	
 	for (int i=0; i < VIA_POINTS_NUMBER; ++i){
 		actual_joints = get_actual_joints();
-		joint_path = differential_inverse_kin_quaternions(actual_joints,via_points_positions.at(i),via_points_quaternions.at(i));
+		joint_path = differential_inverse_kin_quaternions(actual_joints,intermediate_pos.at(i),intermediate_quat.at(i));
 		
 		/* Alternative completley in operational space, however it is less smooth */
 		/*for (int j=0; j < joint_path.rows(); ++j){

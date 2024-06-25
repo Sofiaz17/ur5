@@ -56,14 +56,14 @@ int main(int argc, char **argv)
 	std::vector<ur5::BlockParams> actual_poses;
 
 
-	// ros::ServiceClient vision_node = node.serviceClient<ur5::GetBrickPose>("get_brick_pose");
+	ros::ServiceClient vision_node = node.serviceClient<ur5::GetBrickPose>("get_brick_pose");
 	ros::ServiceClient desired_poses_node = node.serviceClient<ur5::GetDesiredPoses>("get_desired_poses");
 	ros::ServiceClient motion_planner = node.serviceClient<ur5::MoveBlock>("move_block");
-	// vision_node.waitForExistence();
+	vision_node.waitForExistence();
 	desired_poses_node.waitForExistence();
 	motion_planner.waitForExistence();
 
-	// ur5::GetBrickPose get_brick_pose_service;
+	ur5::GetBrickPose get_brick_pose_service;
 	ur5::GetDesiredPoses get_desired_poses_service;
 	ur5::MoveBlock move_block_service;
 
@@ -83,19 +83,15 @@ int main(int argc, char **argv)
 
 	//get_bounding_boxes_service.request is empty
 
-	// service_exit = vision_node.call(get_bounding_boxes_service);
-	// if(!service_exit){
-	// 	ROS_ERROR("%s Failed to call service get_bounding_boxes", info_name);
-	// 	return 1;
-	// }
-	//service_exit = vision_node.call(get_brick_pose_service);
+
+	service_exit = vision_node.call(get_brick_pose_service);
 	//  service_exit = waitForServiceResponse(vision_node, get_brick_pose_service);
-    // if (!service_exit) {
-    //     ROS_ERROR("%s Failed to call service get_brick_pose_service", info_name);
-    //     return 1;
-    // } else {
-    //     ROS_INFO("get_brick_pose_service obtained!");
-    // }
+    if (!service_exit) {
+        ROS_ERROR("%s Failed to call service get_brick_pose_service", info_name);
+        return 1;
+    } else {
+        ROS_INFO("get_brick_pose_service obtained!");
+    }
 
 	
 	// if(!service_exit){
@@ -106,7 +102,7 @@ int main(int argc, char **argv)
 	// }
 
 
-	//actual_poses = get_brick_pose_service.response.poses; //pos blocchi visti da vision
+	actual_poses = get_brick_pose_service.response.poses; //pos blocchi visti da vision
 
 
 //Roll pitch and yaw in Radians
@@ -131,15 +127,15 @@ std::cout << "Quaternion" << std::endl << qa.coeffs() << std::endl;
     // actual_poses.push_back(block);
 
 
-	actual_poses.push_back(ur5::BlockParams());
-	actual_poses.at(0).label = "X1-Y4-Z2";
-	actual_poses.at(0).pose.position.x = 0.4;
-	actual_poses.at(0).pose.position.y = 0.4;
-	actual_poses.at(0).pose.position.z = 0.87;
-	actual_poses.at(0).pose.orientation.x = qa.x();
-	actual_poses.at(0).pose.orientation.y = qa.y();
-	actual_poses.at(0).pose.orientation.z = qa.z();
-	actual_poses.at(0).pose.orientation.w = qa.w();
+	// actual_poses.push_back(ur5::BlockParams());
+	// actual_poses.at(0).label = "X1-Y4-Z2";
+	// actual_poses.at(0).pose.position.x = 0.4;
+	// actual_poses.at(0).pose.position.y = 0.4;
+	// actual_poses.at(0).pose.position.z = 0.87;
+	// actual_poses.at(0).pose.orientation.x = qa.x();
+	// actual_poses.at(0).pose.orientation.y = qa.y();
+	// actual_poses.at(0).pose.orientation.z = qa.z();
+	// actual_poses.at(0).pose.orientation.w = qa.w();
 
 
 
