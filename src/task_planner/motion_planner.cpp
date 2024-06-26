@@ -113,7 +113,7 @@ bool move_block(ur5::MoveBlock::Request &req, ur5::MoveBlock::Response &res)
 
     for (int i=0; i < INTERMEDIATE_POINTS_NUMBER; ++i){
         actual_joints = get_joint_state();
-        joint_path = differential_inverse_kin_quaternions(actual_joints, intermediate_pos.at(i), intermediate_quat.at(i));
+        joint_path = diffInverseKinQuaternions(actual_joints, intermediate_pos.at(i), intermediate_quat.at(i));
 
         int last_joint = joint_path.rows() - 1;
         desired_joints.at(0) = joint_path(last_joint, 0);
