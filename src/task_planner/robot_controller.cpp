@@ -1,5 +1,3 @@
-
-
 #include "ros/ros.h"
 #include "ros/master.h"
 
@@ -7,134 +5,128 @@
 #include "std_msgs/Float64MultiArray.h"
 #include "sensor_msgs/JointState.h"
 
-
+// Name identifier for logging purposes
 char info_name[] = " [robot_controller]:";
-bool debug_mode = false;
+
+// Number of joints in the robot
 int JOINT_SIZE = 8;
 
+// Maximum angular speed of the robot (radians per second)
 double MAX_ANGULAR_SPEED = 3.1415926535 / 10; // PI/10 rad/s
+// Rate of update for controlling the robot (in Hz)
 double UPDATE_RATE = 1000.0; // 1 kHz
-double MAX_INCREMENT; // the upper bound for angular velocity can be directly converted in an upper bound for increments.
+// Maximum incremental change in joint positions per update cycle
+double MAX_INCREMENT; // This will be calculated based on MAX_ANGULAR_SPEED and UPDATE_RATE
 ros::Publisher joint_group_pos_controller_publisher;
 
-
-
 /*!
-    @brief handler of move_robot service, type ur5_lego::MoveRobot.
-    @details It retrieves the actual joint state of the robot and interpolates it with the desired one.
-	All the intermediate joints are sent to the robot, causing the motion.
-    @param[in] ur5_lego::MoveRobot::Request &req: the desired joint configuration.
-	@param[out] ur5_lego::MoveRobot::Response &res: true if success, false if something went wrong.
-    @return True if success, false if something went wrong.
+    @brief Handles the move_robot service of type ur5::MoveRobot.
+    @details Moves the robot smoothly from its current joint state to the desired joint configuration.
+    Interpolates intermediate positions and publishes them for smooth motion.
+    @param[in] req The desired joint configuration.
+    @param[out] res True if the movement was successful, false otherwise.
+    @return True if the movement was successful, false otherwise.
 */
-bool move_robot_handler(ur5::MoveRobot::Request &req, ur5::MoveRobot::Response &res)
+bool move_robot(ur5::MoveRobot::Request &req, ur5::MoveRobot::Response &res)
 {
-	ROS_INFO("%s The robot is moving...", info_name);
-	std::vector<double> actual_joints(JOINT_SIZE);
-	std::vector<double> desired_joints = req.joints.data;
-	std::vector<double> increments(JOINT_SIZE);
-	int total_ticks = 0;
-	ros::Rate loop_rate(UPDATE_RATE);
+    ROS_INFO("%s Initiating robot movement...", info_name);
+    std::vector<double> joints(JOINT_SIZE); // Current joint positions
+    std::vector<double> target_joints = req.joints.data; // Target joint positions
+    std::vector<double> increments(JOINT_SIZE); // Incremental changes in joint positions
+    int total_steps = 0; // Total steps to reach the target position
+    ros::Rate loop_rate(UPDATE_RATE); // Rate at which positions are updated
 
-	sensor_msgs::JointState actual_joints_msg = *ros::topic::waitForMessage<sensor_msgs::JointState>("/ur5/joint_states");
-	for(int i=0;i<actual_joints_msg.name.size();++i){
-		if(actual_joints_msg.name.at(i) == "shoulder_pan_joint") actual_joints.at(0) = actual_joints_msg.position.at(i);
-		else if(actual_joints_msg.name.at(i) == "shoulder_lift_joint") actual_joints.at(1) = actual_joints_msg.position.at(i);
-		else if(actual_joints_msg.name.at(i) == "elbow_joint") actual_joints.at(2) = actual_joints_msg.position.at(i);
-		else if(actual_joints_msg.name.at(i) == "wrist_1_joint") actual_joints.at(3) = actual_joints_msg.position.at(i);
-		else if(actual_joints_msg.name.at(i) == "wrist_2_joint") actual_joints.at(4) = actual_joints_msg.position.at(i);
-		else if(actual_joints_msg.name.at(i) == "wrist_3_joint") actual_joints.at(5) = actual_joints_msg.position.at(i);
-		else if(actual_joints_msg.name.at(i) == "hand_1_joint") actual_joints.at(6) = actual_joints_msg.position.at(i);
-		else if(actual_joints_msg.name.at(i) == "hand_2_joint") actual_joints.at(7) = actual_joints_msg.position.at(i);
-		else ROS_WARN("%s unexpected joint name published by ur5_generic: %s", info_name, actual_joints_msg.name.at(i).c_str());
-	}
+    // Retrieve current joint states from the robot
+    sensor_msgs::JointState msg = *ros::topic::waitForMessage<sensor_msgs::JointState>("/ur5/joint_states");
+    for (int i = 0; i < msg.name.size(); ++i) {
+        // Map received joint positions to the corresponding joint names
+        if (msg.name.at(i) == "shoulder_pan_joint") joints.at(0) = msg.position.at(i);
+        else if (msg.name.at(i) == "shoulder_lift_joint") joints.at(1) = msg.position.at(i);
+        else if (msg.name.at(i) == "elbow_joint") joints.at(2) = msg.position.at(i);
+        else if (msg.name.at(i) == "wrist_1_joint") joints.at(3) = msg.position.at(i);
+        else if (msg.name.at(i) == "wrist_2_joint") joints.at(4) = msg.position.at(i);
+        else if (msg.name.at(i) == "wrist_3_joint") joints.at(5) = msg.position.at(i);
+        else if (msg.name.at(i) == "hand_1_joint") joints.at(6) = msg.position.at(i);
+        else if (msg.name.at(i) == "hand_2_joint") joints.at(7) = msg.position.at(i);
+        else ROS_WARN("%s Received unexpected joint name from ur5_generic: %s", info_name, msg.name.at(i).c_str());
+    }
 
-	if(req.joints.data.size() != JOINT_SIZE){
-		ROS_WARN("%s robot_controller called with %ld joints but it needs %d, this target will be ignored", info_name, req.joints.data.size(), JOINT_SIZE);
-		ROS_INFO("%s ...target ignored", info_name);
-		res.success = false;
-		return true;
-	}
+    // Check if the received joint configuration matches the expected size
+    if (req.joints.data.size() != JOINT_SIZE) {
+        ROS_WARN("%s Robot controller received %ld joints, but expected %d. Ignoring this target.", info_name, req.joints.data.size(), JOINT_SIZE);
+        ROS_INFO("%s ...target ignored", info_name);
+        res.success = false;
+        return true;
+    }
 
-	if(debug_mode){
-		ROS_INFO("%s   Actual joint state: shoulder_pan=%f, shoulder_lift=%f, elbow=%f, wirst=[%f,%f,%f], gripper=[%f,%f]", info_name, actual_joints.at(0), actual_joints.at(1), actual_joints.at(2), actual_joints.at(3), actual_joints.at(4), actual_joints.at(5), actual_joints.at(6), actual_joints.at(7));
-		ROS_INFO("%s   Desired joint state: shoulder_pan=%f, shoulder_lift=%f, elbow=%f, wirst=[%f,%f,%f], gripper=[%f,%f]", info_name, desired_joints.at(0), desired_joints.at(1), desired_joints.at(2), desired_joints.at(3), desired_joints.at(4), desired_joints.at(5), desired_joints.at(6), desired_joints.at(7));
-	}
+    // Calculate the maximum distance to be covered by any joint
+    for (int i = 0; i < JOINT_SIZE; ++i) {
+        increments.at(i) = std::abs(target_joints.at(i) - joints.at(i));
+    }
+    double max_distance = *(std::max_element(increments.begin(), increments.end()));
+    total_steps = std::ceil(max_distance / MAX_INCREMENT);
 
-	// Note: in the following cycle, increments will be used just as a placeholder for the joint distances, because we need to temporary store them extract the max.
-	// the proper initialization of increments will be the one in the next cycle.
-	for(int i=0;i<JOINT_SIZE;++i){
-		increments.at(i) = std::abs( desired_joints.at(i) - actual_joints.at(i) );
-	}
-	double max_distance = *( std::max_element(increments.begin(), increments.end()) );
-	total_ticks = std::ceil( max_distance/MAX_INCREMENT );
+    // Calculate incremental changes for each joint to achieve smooth motion
+    for (int i = 0; i < JOINT_SIZE; ++i) {
+        increments.at(i) = (target_joints.at(i) - joints.at(i)) / total_steps;
+    }
 
-	for(int i=0;i<JOINT_SIZE;++i){
-		increments.at(i) = ( desired_joints.at(i)-actual_joints.at(i) ) / total_ticks;
-	}
+    // Perform incremental movements to reach the target position
+    for (int dt = 0; dt < total_steps; ++dt) {
+        for (int i = 0; i < JOINT_SIZE; ++i) {
+            joints.at(i) += increments.at(i);
+        }
+        req.joints.data = joints;
+        joint_group_pos_controller_publisher.publish(req.joints);
+        loop_rate.sleep();
+    }
 
-	for(int dt=0;dt<total_ticks;++dt){
-		for(int i=0;i<JOINT_SIZE;++i){
-			actual_joints.at(i) += increments.at(i);
-		}
-		req.joints.data = actual_joints;
-		joint_group_pos_controller_publisher.publish(req.joints);
-		loop_rate.sleep();
-	}
-
-
-
-
-	ROS_INFO("%s ...target reached!", info_name);
-	res.success = true;
-	return true;
+    // Notify when the target position is reached
+    ROS_INFO("%s ...target reached!", info_name);
+    res.success = true;
+    return true;
 }
 
-
-
 /*!
-    @brief Main code of robot_controller.
-    @details It waits for ur5_generic.py, then advertises a move_robot service of type ur5_lego::MoveRobot, with handler move_robot_handler().
-    @param[in] int argc, char **argv: classical command line arguments.
-    @return 0 if successful, 1 if something went wrong.
+    @brief Main function for the robot_controller node.
+    @details Waits for initialization of ur5_generic.py, then advertises the move_robot service.
+    @param[in] argc Number of command line arguments.
+    @param[in] argv Array of command line arguments.
+    @return 0 if successful, 1 if an error occurred.
 */
 int main(int argc, char **argv)
 {
-	if(debug_mode){
-		ROS_INFO("DEBUG TRUE");
-		ROS_INFO("%d", debug_mode);
-	} else {
-		ROS_INFO("DEBUG_FALSE");
-		ROS_INFO("%d", debug_mode);
-	}
-	ros::init(argc, argv, "robot_controller");
-	ros::NodeHandle node;
+    ros::init(argc, argv, "robot_controller");
+    ros::NodeHandle node;
 
-	ros::Rate wait_for_ur5_generic(10.0);
-	bool ur5_generic_is_ready = false;
-	ros::master::V_TopicInfo topic_infos;
-	ROS_INFO("%s Waiting for homing procedure...", info_name);
+    // Wait until ur5_generic.py is ready
+    ros::Rate wait_for_ur5_generic(10.0);
+    bool ur5_generic_is_ready = false;
+    ros::master::V_TopicInfo topic_infos;
+    ROS_INFO("%s Waiting for homing procedure...", info_name);
 
-	do{
-		wait_for_ur5_generic.sleep();
-		ros::master::getTopics(topic_infos);
-		for(auto i : topic_infos){
-			if(i.name == "/ur5_generic_is_ready") ur5_generic_is_ready = true;
-		}
-	} while(!ur5_generic_is_ready);
-	ROS_INFO("%s ...homing procedure accomplished!", info_name);
+    do {
+        wait_for_ur5_generic.sleep();
+        ros::master::getTopics(topic_infos);
+        for (auto i : topic_infos) {
+            if (i.name == "/ur5_generic_is_ready") ur5_generic_is_ready = true;
+        }
+    } while (!ur5_generic_is_ready);
+    ROS_INFO("%s ...homing procedure completed!", info_name);
 
-	ros::ServiceServer service = node.advertiseService("move_robot", move_robot_handler);
-	joint_group_pos_controller_publisher = node.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1000);
+    // Advertise the move_robot service and joint position publisher
+    ros::ServiceServer service = node.advertiseService("move_robot", move_robot);
+    joint_group_pos_controller_publisher = node.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1000);
 
-	ros::param::get("/debug_mode", debug_mode);
-	ros::param::get("/joint_size", JOINT_SIZE);
-	ros::param::get("/max_angular_speed", MAX_ANGULAR_SPEED);
-	ros::param::get("/update_rate", UPDATE_RATE);
-	MAX_INCREMENT = MAX_ANGULAR_SPEED / UPDATE_RATE;
+    // Retrieve parameters from the ROS parameter server
+    ros::param::get("/joint_size", JOINT_SIZE);
+    ros::param::get("/max_angular_speed", MAX_ANGULAR_SPEED);
+    ros::param::get("/update_rate", UPDATE_RATE);
+    MAX_INCREMENT = MAX_ANGULAR_SPEED / UPDATE_RATE;
 
-	ROS_INFO("%s robot_controller is ready!", info_name);
-	ros::spin();
+    // Notify when the robot controller is ready
+    ROS_INFO("%s Robot controller is ready!", info_name);
+    ros::spin();
 
-	return 0;
+    return 0;
 }

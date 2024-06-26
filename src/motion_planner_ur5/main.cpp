@@ -4,8 +4,8 @@ using namespace std;
 // testing
 int main()
 {
-    Matrix6d myJac;
-    Matrix6d myJacCross;
+    Matrix6d Jac;
+    Matrix6d JacCrossProd;
     Matrix4d directMatrix, directMatrix2;
     Vector6d myJointVariables;
     Vector6d myvars;
@@ -17,38 +17,16 @@ int main()
     // myvars<< 1,1,1,1,1,1;;
 
     // PREMULTIPLY to express position in a FIXED frame and POSTMULTIPLY to adjust gripper
-    directMatrix = base_to_world() * directKin(myJointVariables) * adjust_gripper();
-    print_eigen("Direct matrix with reference to WORLD frame and gripper adjusted\n", directMatrix);
+    directMatrix = base_to_world() * computeDirectKin(myJointVariables) * alignGripper();
+    displayMatrix("Direct matrix with reference to WORLD frame and gripper adjusted\n", directMatrix);
     cout << endl;
 
     // testing Jacobian computation
-    myJac = computeJacobian(myJointVariables);
-    print_eigen("Jacobian matrix\n", myJac);
-    myJacCross=computeJacobianCross(myJointVariables);
-    print_eigen("\n\nJacobian matrix with cross product\n", myJacCross);
+    Jac = calculateJacobian(myJointVariables);
+    displayMatrix("Jacobian matrix\n", Jac);
+    JacCrossProd=computeJacobianCross(myJointVariables);
+    displayMatrix("\n\nJacobian matrix with cross product\n", JacCrossProd);
 
-
-    // testing interpolation (position and quaternion)
-    // Quaterniond q1(8, 2, 3, 4);
-    // Quaterniond q2(5, 6, 7, 8);
-    // Vector3d p1(1, 2, 3);
-    // Vector3d p2(4, 5, 6);
-    // // test case 1: tempo normalizzato minore di 1
-    // double time1 = 5; // Tempo arbitrario-->normalized time will be 0.5, since it's < 1 we expected slerp as a result
-    // Quaterniond result1 = myslerp(time1, q1, q2);
-    // Vector3d result_p1 = lerp(time1, p1, p2);
-    // cout << "Test case 1:" << endl;
-    // cout << "Result: " << result1.coeffs().transpose() << "\t" << result_p1.transpose() << endl;
-    // cout << endl;
-    // // test case 2: tempo normalizzato maggiore di 1
-    // double time2 = 30; // Tempo arbitrario-->normalized time will be 3, since it's > 1 we expected q2 as a result
-    // Quaterniond result2 = myslerp(time2, q1, q2);
-    // Quaterniond expected2 = q2;
-    // Vector3d result_p2 = lerp(time2, p1, p2);
-    // Vector3d expected_p2 = p2;
-    // cout << "Test case 2:" << endl;
-    // cout << "Result: " << result2.coeffs().transpose() << "\t" << result_p2.transpose() << endl;
-    // cout << endl;
 
     // testing inverse differential kinematics
     Vector8d mr;          // Stato del manipolatore

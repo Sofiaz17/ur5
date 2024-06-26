@@ -51,7 +51,7 @@ bool almostZero(double x);
     @param[in] m: matrix to print.
     @return True if the number is minor than 10^(-7), false otherwise.
 */
-int print_eigen(string str, MatrixXd m);
+int displayMatrix(string str, MatrixXd m);
 
 /*!
     @brief Compute transformation matrix from i to j frame.
@@ -61,7 +61,7 @@ int print_eigen(string str, MatrixXd m);
     @param[in] a: constant value. It's the length of the common normal.
     @return The transformation matrix from joint i to joint j. It's a 4x4 matrix.
 */
-Matrix4d computeTransformationMatrix(double th, double alpha, double distance, double a);
+Matrix4d calculateTransMatrix(double th, double alpha, double distance, double a);
 
 /*!
     @brief Compute transformation matrix from base to world frame.
@@ -75,14 +75,14 @@ Matrix4d base_to_world();
     @details The transformation is given by a rotation of PI/2 around z axis.
     @return The transformation matrix, it's a 4x4 matrix.
 */
-Matrix4d adjust_gripper();
+Matrix4d alignGripper();
 
 /*!
     @brief Function to compute Jacobian matrix
     @param[in] th: are the joint variables. Since we have six joints, th will be a 6 dimensions vector.
     @return the Jacobian matrix. It's a 6x6 matrix.
 */
-Matrix6d computeJacobian(Vector6d th);
+Matrix6d calculateJacobian(Vector6d th);
 
 /*!
     @brief Function to compute Jacobian matrix using cross product
@@ -96,7 +96,7 @@ Matrix6d computeJacobianCross(Vector6d th);
     @param[in] Th: are the joint variables. Since we have six joints, th will be a 6 dimensions vector.
     @return the direct kinematics matrix. It's a 4x4 matrix.
 */
-Matrix4d directKin(VectorXd Th);
+Matrix4d computeDirectKin(VectorXd Th);
 
 /*!
     @brief Function to compute inverse matrix.
@@ -105,7 +105,7 @@ Matrix4d directKin(VectorXd Th);
     @param[in] scaleFactor: scale factor.
     @return the possible joint variables, in a matrix form, for a giving position and orientation given in the direct kinematics matrix.
 */
-Matrix<double, 6, 8> inverseKin(Vector3d p60, Matrix3d R60, double scaleFactor);
+Matrix<double, 6, 8> InverseKinematics(Vector3d p60, Matrix3d R60, double scaleFactor);
 
 /*! 
     @brief To linearly interpolate two vectors in the space.
@@ -125,7 +125,7 @@ Vector3d lerp(double time, Vector3d p1, Vector3d p2);
     @param[in] q2: second quaternion.
     @return the interpolated quaternion.
 */
-Quaterniond myslerp(double time, Quaterniond q1, Quaterniond q2);
+Quaterniond getSlerp(double time, Quaterniond q1, Quaterniond q2);
 
 /*! 
     @brief To insert a new path instance each time it's computed using inverse differential kinematics 
@@ -148,6 +148,6 @@ Path insert_new_path_instance(Path p, Vector6d js, Vector2d gs);
     @param[in] q2: second quaternion.
     @return a matrix with 8 columns and a variable number of rows.
 */
-Path differential_inverse_kin_quaternions(Vector8d mr, Vector3d f_p, Quaterniond f_q);
+Path diffInverseKinQuaternions(Vector8d mr, Vector3d f_p, Quaterniond f_q);
 
 #endif

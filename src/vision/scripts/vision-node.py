@@ -1,71 +1,64 @@
 #!/usr/bin/env python3
-"""
-@file
-@brief This script integrates block detection and pose estimation using ROS, OpenCV, Open3D, and other libraries.
 
-@mainpage Block Detection and Pose Estimation
+# @file vision-node.py
+# @brief This script integrates block detection and pose estimation using ROS, OpenCV, Open3D, and other libraries.
 
-@section Overview
-This script integrates ROS (Robot Operating System) with computer vision techniques for block detection using the ZED camera.
-It performs:
-- Image processing to find regions of interest (ROIs) using OpenCV.
-- Block detection using a custom Block Detection module (`Block_detection.py`).
-- Point cloud processing and pose estimation using Open3D.
+# @defgroup Vision VISION
+# @addtogroup Vision
 
-@section Details
-The script subscribes to ROS topics for images (`/ur5/zed_node/left_raw/image_raw_color`) and point clouds
-(`/ur5/zed_node/point_cloud/cloud_registered`). Upon receiving an image, it:
-- Finds ROIs and detects blocks within the ROIs using `Block_detection.py`.
-- Generates a point cloud from detected blocks and estimates their poses relative to a fixed coordinate system.
+# @mainpage Block Detection and Pose Estimation
 
-The script also uses Open3D for point cloud processing, including downsampling, feature extraction, and registration
-algorithms (RANSAC and ICP) to refine pose estimation.
+# @section Overview
+# This script integrates ROS (Robot Operating System) with computer vision techniques for block detection using the ZED camera.
+# It performs:
+# - Image processing to find regions of interest (ROIs) using OpenCV.
+# - Block detection using a custom Block Detection module (`Block_detection.py`).
+# - Point cloud processing and pose estimation using Open3D.
 
-@subsection Dependencies
-- ROS (Kinetic or newer)
-- OpenCV
-- Open3D
-- NumPy
-- SciPy
-- CV Bridge (ROS)
-- Sensor_msgs (ROS)
+# @section Details
+# The script subscribes to ROS topics for images (`/ur5/zed_node/left_raw/image_raw_color`) and point clouds
+# (`/ur5/zed_node/point_cloud/cloud_registered`). Upon receiving an image, it:
+# - Finds ROIs and detects blocks within the ROIs using `Block_detection.py`.
+# - Generates a point cloud from detected blocks and estimates their poses relative to a fixed coordinate system.
 
-@subsection Directories
-- `images/`: Contains images used for ROI detection and visualization.
+# The script also uses Open3D for point cloud processing, including downsampling, feature extraction, and registration
+# algorithms (RANSAC and ICP) to refine pose estimation.
 
-@subsection Parameters
-- `R_cloud_to_world`: Transformation matrix from cloud to world coordinates.
-- `x_camera`: Camera position offset.
-- `base_offset`: Base offset of the block.
-- `block_offset`: Offset specific to each block.
-- `voxel_size`: Size parameter for downsampling point clouds.
+# @section Dependencies
+# - ROS (Kinetic or newer)
+# - OpenCV
+# - Open3D
+# - NumPy
+# - SciPy
+# - CV Bridge (ROS)
+# - Sensor_msgs (ROS)
 
-@subsection Flags
-- `debug`: Flag to enable debug visualizations.
+# @section Directories
+# - `images/`: Contains images used for ROI detection and visualization.
 
-@subsection Classes
-- `Point`: Stores point coordinates and pixel locations.
-- `block`: ROS message type for block information.
+# @section Parameters
+# - `R_cloud_to_world`: Transformation matrix from cloud to world coordinates.
+# - `x_camera`: Camera position offset.
+# - `base_offset`: Base offset of the block.
+# - `block_offset`: Offset specific to each block.
+# - `voxel_size`: Size parameter for downsampling point clouds.
 
-@subsection Functions
-- `get_img(img)`: Callback to process incoming images, detect ROIs, and detect blocks.
-- `find_pose(point_cloud)`: Callback to process point clouds, estimate block poses, and publish results.
-- Various utility functions for point cloud operations, mesh loading, transformation, and visualization.
+# @section Flags
+# - `debug`: Flag to enable debug visualizations.
 
-@subsection Main
-The script initializes ROS nodes and subscribers (`img_sub`, `point_cloud_sub`) and starts the main loop to process incoming messages.
+# @section Classes
+# - `Point`: Stores point coordinates and pixel locations.
+# - `block`: ROS message type for block information.
 
-@subsection Outputs
-- Publishes block poses (`vision/position`) as ROS messages.
-- Outputs debug visualizations and intermediate images to `images/` directory.
+# @section Functions
+# - `get_img(img)`: Callback to process incoming images, detect ROIs, and detect blocks.
+# - `find_pose(point_cloud)`: Callback to process point clouds, estimate block poses, and publish results.
+# - Various utility functions for point cloud operations, mesh loading, transformation, and visualization.
 
-@subsection Authors
-- Developed by [Author Name] at [Organization Name].
+# @section Main
+# - `get_brick_pose_server()`: Main function to start the ROS node and service.
 
-@subsection License
-- This script is released under [License Type].
 
-"""
 
 import rospy
 from vision.msg import block
@@ -236,21 +229,6 @@ def create_open3d_point_cloud(point_cloud_box):
 def visualize_point_cloud(pcd):
     o3d.visualization.draw_geometries([pcd])
 
-
-#Loading Mesh model of the block having a specific label
-# def load_mesh_model(block_label):
-
-#     file_path = '/home/sofia_unix/catkin_ws/src/ur5/src/vision/scripts/models'+block_label+'/mesh/'+block_label+'.stl'
-#     #mesh = o3d.io.read_triangle_mesh('models/'+block_label+'/mesh/'+block_label+'.stl').sample_points_poisson_disk(6138)
-#     #mesh = o3d.io.read_triangle_mesh('/home/sofia_unix/catkin_ws/src/ur5/src/vision/scripts/models'+block_label+'/mesh/'+block_label+'.stl').sample_points_poisson_disk(6138)
-#     #mesh = o3d.io.read_triangle_mesh("models/X1-Y4-Z2/mesh/X1-Y4-Z2.stl").sample_points_poisson_disk(6138)
-#     mesh = o3d.io.read_triangle_mesh(file_path).sample_points_poisson_disk(6138)
-#     #rospy.loginfo(f"Number of vertices: {len(mesh.vertices)}")
-#     #rospy.loginfo(f"Number of triangles: {len(mesh.triangles)}")
-    
-
-#     #o3d.visualization.draw_geometries([mesh])
-#     return mesh
 
 def load_mesh_model(block_label):
     # Adjust this path to the correct directory where your STL files are stored
@@ -563,34 +541,6 @@ def to_quaternions(r, p ,y):
     return quaternion_from_euler(r, p, y)
 
 
-# def msg_pub(block_list):
-#     # @Description function that prepares and sends a message to motion node
-#     # @Parameters list of detected blocks
-
-#     global send_next_msg
-
-#     for current_block in block_list:
-#         msg = block()
-
-#         # Preparing msg
-#         msg.label = current_block.label
-#         msg.x = round(current_block.world_coord[0, 0], 6)
-#         msg.y = round(current_block.world_coord[0, 1], 6)
-#         msg.z = round(current_block.world_coord[0, 2], 6)
-#         msg.roll = current_block.pose[0]
-#         msg.pitch = current_block.pose[1]
-#         msg.yaw = current_block.pose[2]
-
-#         # QUATERNION conversion
-#         q = to_quaternions(msg.roll, msg.pitch, msg.yaw)
-
-#         block_info(msg)    # print msg info
-
-#         pub.publish(msg)
-#         rate.sleep()
-
-#         print("Waiting for sending next block")
-
 def msg_pub(request):
     print('VISION in msg_pub')
     # @Description function that prepares and sends a message to motion node
@@ -600,16 +550,6 @@ def msg_pub(request):
     #if send_next_msg:
     global block_list
 
-    #msg = block()
-    #q = to_quaternions(msg.roll, msg.pitch, msg.yaw)
-       # if len(block_list) > 0:
-        #    current_block = block_list.pop()
-        #if len(block_list) == 0:
-        #    print("PUBLISHED ALL BLOCKS")
-        #    send_next_msg = False
-        #    return
-    #poses = []
-    #labels = []
     
         # Preparing msg
     response = GetBrickPoseResponse()
@@ -640,54 +580,6 @@ def msg_pub(request):
 
     
     return response
-
-# def msg_pub(block_list):
-#     # @Description function that prepares and sends a message to motion node
-#     # @Parameters list of detected blocks
-
-#     #global send_next_msg
-#     #if send_next_msg:
-#     #global block_list
-
-#     #msg = block()
-#     #q = to_quaternions(msg.roll, msg.pitch, msg.yaw)
-#        # if len(block_list) > 0:
-#         #    current_block = block_list.pop()
-#         #if len(block_list) == 0:
-#         #    print("PUBLISHED ALL BLOCKS")
-#         #    send_next_msg = False
-#         #    return
-#     #poses = []
-#     #labels = []
-    
-#         # Preparing msg
-#     response = GetBrickPoseResponse()
-#     for current_block in block_list:
-#         bp = BlockParams()
-#         q = to_quaternions(current_block.pose[0], current_block.pose[1],  current_block.pose[2])
-#         #labels.append(current_block.label)
-#         #bp.labels = labels
-#         bp.label = current_block.label
-#         bp.pose.position.x = round(current_block.world_coord[0, 0], 6)
-#         bp.pose.position.y = round(current_block.world_coord[0, 1], 6)
-#         bp.pose.position.z = round(current_block.world_coord[0, 2], 6)
-        
-#         bp.pose.orientation.x = q[0]
-#         bp.pose.orientation.y = q[1]
-#         bp.pose.orientation.z = q[2]
-#         bp.pose.orientation.w = q[3]
-
-#         block_info(bp)    # print bp info
-#         #poses.append(pose)
-#         response.poses.append(bp)
-
-  
-#     #response.poses.append(bp)
-#     #response.label = labels
-#     response.numBricks = len(block_list)
-
-    
-#     return response
 
 
 def get_brick_pose_server():
