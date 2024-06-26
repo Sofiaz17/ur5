@@ -34,6 +34,9 @@ def define_desired_poses():
   global desired_poses
   desired_poses.append(DesiredPose3D( label = "X1-Y2-Z2-TWINFILLET", x = -0.1, y = 0.2, z = z_offset, theta = PI ))
   desired_poses.append(DesiredPose3D( label = "X1-Y4-Z2", x = -0.1, y = 0.35, z = z_offset, theta = PI/6 ))
+  desired_poses.append(DesiredPose3D( label = "X1-Y1-Z2", x = -0.1, y = 0.4, z = z_offset, theta = PI/6 ))
+  desired_poses.append(DesiredPose3D( label = "X2-Y2-Z2", x = -0.1, y = 0.5, z = z_offset, theta = PI/6 ))
+  desired_poses.append(DesiredPose3D( label = "X1-Y2-Z2-CHAMFER", x = -0.1, y = 0.6, z = z_offset, theta = PI/3 ))
 
 define_desired_poses()
 
