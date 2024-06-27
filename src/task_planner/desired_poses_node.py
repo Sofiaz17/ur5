@@ -7,16 +7,10 @@ from ur5.srv import GetDesiredPoses,GetDesiredPosesRequest,GetDesiredPosesRespon
 from ur5.msg import BlockParams
 
 from tf.transformations import quaternion_from_euler
-#import desired_poses_params as dpp
-# from ur5_modules.desired_poses_params import desired_poses
-# from ur5_modules.desired_poses_params import x_offset
-# from ur5_modules.desired_poses_params import y_offset
-# from ur5_modules.desired_poses_params import z_offset
+
 
 desired_poses = []
 PI = 3.1415926535
-x_offset = 0.5
-y_offset = 0.2
 z_offset = 0.87
 
 info_name = "[desired_poses_node]:"
@@ -32,17 +26,21 @@ class DesiredPose3D:
 
 def define_desired_poses():
   global desired_poses
-  desired_poses.append(DesiredPose3D( label = "X1-Y2-Z2-TWINFILLET", x = -0.1, y = 0.2, z = z_offset, theta = PI ))
-  desired_poses.append(DesiredPose3D( label = "X1-Y4-Z2", x = -0.1, y = 0.35, z = z_offset, theta = PI/6 ))
+  desired_poses.append(DesiredPose3D( label = "X1-Y2-Z2-TWINFILLET", x = 0.8, y = 0.4, z = z_offset, theta = PI ))
+  desired_poses.append(DesiredPose3D( label = "X1-Y4-Z2", x = 0.3, y = 0.5, z = z_offset, theta = PI/6 ))
   desired_poses.append(DesiredPose3D( label = "X1-Y1-Z2", x = -0.1, y = 0.4, z = z_offset, theta = PI/6 ))
   desired_poses.append(DesiredPose3D( label = "X2-Y2-Z2", x = -0.1, y = 0.5, z = z_offset, theta = PI/6 ))
   desired_poses.append(DesiredPose3D( label = "X1-Y2-Z2-CHAMFER", x = -0.1, y = 0.6, z = z_offset, theta = PI/3 ))
+  desired_poses.append(DesiredPose3D( label = "X2-Y2-Z2-FILLET", x = -0.1, y = 0.5, z = z_offset, theta = PI/2 ))
+  desired_poses.append(DesiredPose3D( label = "X1-Y3-Z2", x = 0.1, y = 0.35, z = z_offset, theta = PI/3 ))
+  desired_poses.append(DesiredPose3D( label = "X1-Y2-Z1", x = 0.1, y = 0.35, z = z_offset, theta = PI/3 ))
+  desired_poses.append(DesiredPose3D( label = "X1-Y4-Z1", x = 0.8, y = 0.7, z = z_offset, theta = PI/4 ))
 
 define_desired_poses()
 
 def get_desired_poses_handler(req):
-  """! handler of get_desired_poses service, type ur5_lego.srv.GetDesiredPoses
-  It adjusts the values imported from desired_poses_params.py to convert them from table frame to world frame, and then returns them to the caller.
+  """! handler of get_desired_poses service, type ur5.srv.GetDesiredPoses
+  It initializes a vector with block desired poses and populates the GetDesiredPoses with them.
   @param req: empty
   @return res: the list of desired poses
   """
@@ -53,25 +51,10 @@ def get_desired_poses_handler(req):
   for i in range(res.dim):
     res.poses.append(BlockParams())
 
-    # res.poses[i].label = desired_poses[i].label
-    # res.poses[i].pose.position.x = desired_poses[i].x + x_offset
-    # res.poses[i].pose.position.y = desired_poses[i].y + y_offset
-    # res.poses[i].pose.position.z = z_offset
-
     res.poses[i].label = desired_poses[i].label
-    res.poses[i].pose.position.x = desired_poses[i].x + x_offset
-    res.poses[i].pose.position.y = desired_poses[i].y + y_offset
+    res.poses[i].pose.position.x = desired_poses[i].x
+    res.poses[i].pose.position.y = desired_poses[i].y
     res.poses[i].pose.position.z = z_offset
-
-    # res.poses[i].euler.x = 0.0
-    # res.poses[i].euler.y = 0.0
-    # res.poses[i].euler.z = desired_poses[i].theta
-
-    # q = quaternion_from_euler(res.poses[i].euler.x, res.poses[i].euler.y, res.poses[i].euler.z, 'sxyz')
-    # res.poses[i].orientation.x = q[0]
-    # res.poses[i].orientation.y = q[1]
-    # res.poses[i].orientation.z = q[2]
-    # res.poses[i].orientation.w = q[3]
 
     q = quaternion_from_euler(0.0, 0.0, desired_poses[i].theta, 'sxyz')
     res.poses[i].pose.orientation.x = q[0]
@@ -95,6 +78,3 @@ if __name__ == "__main__":
   debug_mode = ros.get_param("/debug_mode")
   ros.loginfo("%s desired_poses_node is ready!", info_name)
   ros.spin()
-
-
-#in the end i have GetDesiredPoses srv populated with the desired poses of every block

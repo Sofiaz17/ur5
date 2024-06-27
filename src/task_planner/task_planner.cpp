@@ -22,24 +22,24 @@ char info_name[] = " [  task_planner  ]:";
     @{
 */
 
-/**
- * @brief Waits for a ROS service to become available, with retries and delays.
- * @param[in] client The ROS service client.
- * @param[in] srv The service object to call.
- * @param[in] retries Number of retry attempts.
- * @param[in] delay_ms Delay in milliseconds between retries.
- * @return true if the service becomes available, false otherwise.
- */
-bool waitForService(ros::ServiceClient &client, ur5::GetBrickPose &srv, int retries = 10, int delay_ms = 1000) {
-    for (int i = 0; i < retries; ++i) {
-        if (client.call(srv)) {
-            return true;
-        }
-        ROS_WARN("%s Waiting for vision node...", info_name);
-        ros::Duration(delay_ms / 1000.0).sleep();
-    }
-    return false;
-}
+// /**
+//  * @brief Waits for a ROS service to become available, with retries and delays.
+//  * @param[in] client The ROS service client.
+//  * @param[in] srv The service object to call.
+//  * @param[in] retries Number of retry attempts.
+//  * @param[in] delay_ms Delay in milliseconds between retries.
+//  * @return true if the service becomes available, false otherwise.
+//  */
+// bool waitForService(ros::ServiceClient &client, ur5::GetBrickPose &srv, int retries = 10, int delay_ms = 1000) {
+//     for (int i = 0; i < retries; ++i) {
+//         if (client.call(srv)) {
+//             return true;
+//         }
+//         ROS_WARN("%s Waiting for vision node...", info_name);
+//         ros::Duration(delay_ms / 1000.0).sleep();
+//     }
+//     return false;
+// }
 
 
 /*!
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
             block = *it;
 
             move_block_service.request.start_pose = block;
-            move_block_service.request.target_pose = desired_block;
+            move_block_service.request.end_pose = desired_block;
 
             service_ended = motion_planner.call(move_block_service);
             if(!service_ended){

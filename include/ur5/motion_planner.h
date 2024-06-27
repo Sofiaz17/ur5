@@ -77,12 +77,6 @@ Matrix4d base_to_world();
 */
 Matrix4d alignGripper();
 
-/*!
-    @brief Function to compute Jacobian matrix
-    @param[in] th: are the joint variables. Since we have six joints, th will be a 6 dimensions vector.
-    @return the Jacobian matrix. It's a 6x6 matrix.
-*/
-Matrix6d calculateJacobian(Vector6d th);
 
 /*!
     @brief Function to compute Jacobian matrix using cross product
@@ -98,14 +92,6 @@ Matrix6d computeJacobianCross(Vector6d th);
 */
 Matrix4d computeDirectKin(VectorXd Th);
 
-/*!
-    @brief Function to compute inverse matrix.
-    @param[in] p60: are the joint variables. Since we have six joints, th will be a 6 dimensions vector.
-    @param[in] R60: is the rotational matrix, extracted from direct kinematics matrix.
-    @param[in] scaleFactor: scale factor.
-    @return the possible joint variables, in a matrix form, for a giving position and orientation given in the direct kinematics matrix.
-*/
-Matrix<double, 6, 8> InverseKinematics(Vector3d p60, Matrix3d R60, double scaleFactor);
 
 /*! 
     @brief To linearly interpolate two vectors in the space.

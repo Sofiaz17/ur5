@@ -49,12 +49,13 @@ Vector8d get_joint_state()
     @param[in] gripper_type The type of gripper being used.
     @param[out] desired_joints A reference to the vector containing the adjusted joint values.
 */
-void set_gripper(std::vector<double> &desired_joints, double width, std::string gripper_type)
+void set_gripper_joints(std::vector<double> &desired_joints, double width, std::string gripper_type)
 {
     double opening_angle = atan2(0.5 * (width - 0.04), 0.06);
     desired_joints.at(JOINT_SIZE - 1) = opening_angle;
     desired_joints.at(JOINT_SIZE - 2) = opening_angle;
 }
+
 
 /*!
     @brief Service handler for moving a block using the robot.
@@ -78,6 +79,7 @@ bool move_block(ur5::MoveBlock::Request &req, ur5::MoveBlock::Response &res)
 
     ROS_INFO("%s Moving block \"%s\"...", info_name, req.start_pose.label.c_str());
 
+    // set_intermediate_points(ur5::MoveBlock::Request &req,     Quaterniond fix_block_orientation;)
 
     // Move the block
     fix_block_orientation.x() = 0.7071;
@@ -113,7 +115,7 @@ bool move_block(ur5::MoveBlock::Request &req, ur5::MoveBlock::Response &res)
 
     for (int i=0; i < INTERMEDIATE_POINTS_NUMBER; ++i){
         actual_joints = get_joint_state();
-        joint_path = differential_inverse_kin_quaternions(actual_joints, intermediate_pos.at(i), intermediate_quat.at(i));
+        joint_path = diffInverseKinQuaternions(actual_joints, intermediate_pos.at(i), intermediate_quat.at(i));
 
         int last_joint = joint_path.rows() - 1;
         desired_joints.at(0) = joint_path(last_joint, 0);
@@ -142,13 +144,13 @@ bool move_block(ur5::MoveBlock::Request &req, ur5::MoveBlock::Response &res)
         bool gripper_change = false;
         if (i == 1) {
             if (req.start_pose.label == "X2-Y2-Z2" || req.start_pose.label == "X2-Y2-Z2-FILLET") {
-                set_gripper(desired_joints, 0.15, GRIPPER_TYPE);
+                set_gripper_joints(desired_joints, 0.15, GRIPPER_TYPE);
             } else {
-                set_gripper(desired_joints, 0.02, GRIPPER_TYPE);
+                set_gripper_joints(desired_joints, 0.02, GRIPPER_TYPE);
             }
             gripper_change = true;
         } else if (i == 4) {
-            set_gripper(desired_joints, 0.3, GRIPPER_TYPE);
+            set_gripper_joints(desired_joints, 0.35, GRIPPER_TYPE);
             gripper_change = true;
         }
 
@@ -194,7 +196,7 @@ int main(int argc, char **argv)
     ur5::MoveRobot move_robot_homing;
     bool service_exit;
     std::vector<double> desired_joints{-0.32, -0.58, -2.76, -1.63, -3.14, 3.49, 0.0, 0.0};
-    set_gripper(desired_joints, 0.3, GRIPPER_TYPE);
+    set_gripper_joints(desired_joints, 0.3, GRIPPER_TYPE);
 
     /* Send joints to robot */
     move_robot_homing.request.joints.data = desired_joints;

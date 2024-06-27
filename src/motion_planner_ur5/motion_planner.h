@@ -43,13 +43,9 @@ Matrix4d base_to_world();
 
 Matrix4d alignGripper();
 
-Matrix6d calculateJacobian(Vector6d th);
-
 Matrix6d computeJacobianCross(Vector6d th);
 
 Matrix4d computeDirectKin(VectorXd Th);
-
-Matrix<double, 6, 8> InverseKinematics(Vector3d p60, Matrix3d R60, double scaleFactor);
 
 Vector3d lerp(double time, Vector3d p1, Vector3d p2);
 
