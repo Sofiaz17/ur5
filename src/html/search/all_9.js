@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['path_5fdt_23',['path_dt',['../group__Motion__module.html#ga948d1209d4185ebb96a27ace68eb47d5',1,'motion_planner.h']]],
-  ['point_24',['Point',['../classscripts_1_1vision-node_1_1Point.html',1,'scripts.vision-node.Point'],['../classscripts_1_1vision-node1_1_1Point.html',1,'scripts.vision-node1.Point']]]
+  ['joints_20references_20leave_20it_20commented_20if_20you_20have_20an_20external_20node_20setting_20them_0',['need to uncomment this to be able to send joints references (leave it commented if you have an external node setting them)',['..//Users/dev/Desktop/Fondamenti della Robotica/ur5/src/task_planner/ur5_generic.py#autotoc_md0',1,'']]]
 ];

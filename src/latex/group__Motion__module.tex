@@ -1,24 +1,24 @@
-\hypertarget{group__Motion__module}{}\doxysection{M\+O\+T\+I\+ON}
-\label{group__Motion__module}\index{MOTION@{MOTION}}
-\doxysubsection*{Typedefs}
+\doxysection{MOTION}
+\hypertarget{group__Motion__module}{}\label{group__Motion__module}\index{MOTION@{MOTION}}
+\doxysubsubsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{group__Motion__module_ga827d6fd2b568970038cb4c5628a806c4}\label{group__Motion__module_ga827d6fd2b568970038cb4c5628a806c4}} 
+\Hypertarget{group__Motion__module_ga827d6fd2b568970038cb4c5628a806c4}\label{group__Motion__module_ga827d6fd2b568970038cb4c5628a806c4} 
 typedef Matrix$<$ double, 6, 6 $>$ {\bfseries Matrix6d}
 \item 
-\mbox{\Hypertarget{group__Motion__module_ga98c311f8f84d62784ec0499c9df9816d}\label{group__Motion__module_ga98c311f8f84d62784ec0499c9df9816d}} 
+\Hypertarget{group__Motion__module_ga98c311f8f84d62784ec0499c9df9816d}\label{group__Motion__module_ga98c311f8f84d62784ec0499c9df9816d} 
 typedef Matrix$<$ double, 6, 1 $>$ {\bfseries Vector6d}
 \item 
-\mbox{\Hypertarget{group__Motion__module_gad02ada258c7bcecf49025f9aa5daaf56}\label{group__Motion__module_gad02ada258c7bcecf49025f9aa5daaf56}} 
+\Hypertarget{group__Motion__module_gad02ada258c7bcecf49025f9aa5daaf56}\label{group__Motion__module_gad02ada258c7bcecf49025f9aa5daaf56} 
 typedef Matrix$<$ double, 8, 1 $>$ {\bfseries Vector8d}
 \item 
-\mbox{\Hypertarget{group__Motion__module_gac9d330ba4a33d4db13155ab248ce88ed}\label{group__Motion__module_gac9d330ba4a33d4db13155ab248ce88ed}} 
+\Hypertarget{group__Motion__module_gac9d330ba4a33d4db13155ab248ce88ed}\label{group__Motion__module_gac9d330ba4a33d4db13155ab248ce88ed} 
 typedef Matrix$<$ double, 3, 1 $>$ {\bfseries Vector3d}
 \item 
-\mbox{\Hypertarget{group__Motion__module_ga21d3f3cd88d7e0848be4d48b906ec1e5}\label{group__Motion__module_ga21d3f3cd88d7e0848be4d48b906ec1e5}} 
+\Hypertarget{group__Motion__module_ga21d3f3cd88d7e0848be4d48b906ec1e5}\label{group__Motion__module_ga21d3f3cd88d7e0848be4d48b906ec1e5} 
 typedef Matrix$<$ double, Dynamic, 8 $>$ {\bfseries Path}
 \end{DoxyCompactItemize}
-\doxysubsection*{Functions}
+\doxysubsubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
 Matrix4d \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculate\+Trans\+Matrix}} (double th, double alpha, double distance, double a)
@@ -31,48 +31,44 @@ bool \mbox{\hyperlink{group__Motion__module_gab318d3ba263e0b9f0632088ffcb43636}{
 \begin{DoxyCompactList}\small\item\em Checks if a double value is almost zero. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{group__Motion__module_ga1072f53ae75faeceb25f1bec47fe243c}{display\+Matrix}} (string str, Matrix\+Xd m)
 \begin{DoxyCompactList}\small\item\em Displays a matrix with a specified string label. \end{DoxyCompactList}\item 
-Matrix6d \mbox{\hyperlink{group__Motion__module_ga6f6cf0de0027ede33327d8c0c442de5a}{calculate\+Jacobian}} (Vector6d th)
-\begin{DoxyCompactList}\small\item\em Calculates the Jacobian matrix for a given set of joint angles. \end{DoxyCompactList}\item 
 Eigen\+::\+Matrix4d \mbox{\hyperlink{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632}{compute\+Direct\+Kin}} (Vector\+Xd Th)
 \begin{DoxyCompactList}\small\item\em Computes the direct kinematics transformation matrix. \end{DoxyCompactList}\item 
-Matrix$<$ double, 6, 8 $>$ \mbox{\hyperlink{group__Motion__module_gaad345308526d3c3a710fb90765b89a39}{Inverse\+Kinematics}} (Vector3d p60, Matrix3d R60, double scale\+Factor)
-\begin{DoxyCompactList}\small\item\em Computes the inverse kinematics for a given end-\/effector pose. \end{DoxyCompactList}\item 
 Vector3d \mbox{\hyperlink{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93}{lerp}} (double time, Vector3d p1, Vector3d p2)
-\begin{DoxyCompactList}\small\item\em Perform linear interpolation (L\+E\+RP) between two 3D vectors. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Perform linear interpolation (LERP) between two 3D vectors. \end{DoxyCompactList}\item 
 Quaterniond \mbox{\hyperlink{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da}{get\+Slerp}} (double time, Quaterniond q1, Quaterniond q2)
-\begin{DoxyCompactList}\small\item\em Perform spherical linear interpolation (S\+L\+E\+RP) between two quaternions. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Perform spherical linear interpolation (SLERP) between two quaternions. \end{DoxyCompactList}\item 
 Matrix6d \mbox{\hyperlink{group__Motion__module_gaddb52e75ac2cb1b9d098a0a8a101ac7b}{compute\+Jacobian\+Cross}} (Vector6d Th)
 \begin{DoxyCompactList}\small\item\em Compute the geometric Jacobian matrix using the cross-\/product method. \end{DoxyCompactList}\item 
 Path \mbox{\hyperlink{group__Motion__module_ga15a678e5b8a03c47c2e03c03d8b0ed3c}{diff\+Inverse\+Kin\+Quaternions}} (Vector8d mr, Vector3d f\+\_\+p, Quaterniond f\+\_\+q)
 \begin{DoxyCompactList}\small\item\em Perform differential inverse kinematics using quaternions for a robotic path. \end{DoxyCompactList}\item 
 Path \mbox{\hyperlink{group__Motion__module_ga60be8ff38c2f589bdb17bc31799bbe28}{insert\+\_\+new\+\_\+path\+\_\+instance}} (Path p, Vector6d js, Vector2d gs)
 \begin{DoxyCompactList}\small\item\em Insert a new instance of joint values and gripper state into the Path data structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
-\doxysubsection*{Variables}
+\doxysubsubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}\label{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}} 
-const Vector\+Xd \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}} = (Vector\+Xd(6) $<$$<$ 0, -\/0.\+425, -\/0.\+3922, 0, 0, 0).finished()
-\begin{DoxyCompactList}\small\item\em Vector of A distance of standard U\+R5. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}\label{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}} 
-const Vector\+Xd \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}} = (Vector\+Xd(6) $<$$<$ 0.\+1625, 0, 0, 0.\+1333, 0.\+0997, 0.\+0996).finished()
-\begin{DoxyCompactList}\small\item\em Vector of D distance of standard U\+R5. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}\label{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}} 
-const Vector\+Xd \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{A\+L\+P\+HA}} = (Vector\+Xd(6) $<$$<$ M\+\_\+\+PI / 2, 0, 0, M\+\_\+\+PI / 2, -\/M\+\_\+\+PI / 2, 0).finished()
-\begin{DoxyCompactList}\small\item\em Vector of A\+L\+P\+HA angles of standard U\+R5. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{group__Motion__module_ga28343fd4eea11e1d7ee37435114dfc5a}\label{group__Motion__module_ga28343fd4eea11e1d7ee37435114dfc5a}} 
+\Hypertarget{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}\label{group__Motion__module_gaef4180a824a150c0d584bccc407662b9} 
+const Vector\+Xd {\bfseries A} = (Vector\+Xd(6) $<$$<$ 0, -\/0.\+425, -\/0.\+3922, 0, 0, 0).finished()
+\begin{DoxyCompactList}\small\item\em Vector of A distance of standard UR5. \end{DoxyCompactList}\item 
+\Hypertarget{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}\label{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798} 
+const Vector\+Xd {\bfseries D} = (Vector\+Xd(6) $<$$<$ 0.\+1625, 0, 0, 0.\+1333, 0.\+0997, 0.\+0996).finished()
+\begin{DoxyCompactList}\small\item\em Vector of D distance of standard UR5. \end{DoxyCompactList}\item 
+\Hypertarget{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}\label{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4} 
+const Vector\+Xd {\bfseries ALPHA} = (Vector\+Xd(6) $<$$<$ M\+\_\+\+PI / 2, 0, 0, M\+\_\+\+PI / 2, -\/M\+\_\+\+PI / 2, 0).finished()
+\begin{DoxyCompactList}\small\item\em Vector of ALPHA angles of standard UR5. \end{DoxyCompactList}\item 
+\Hypertarget{group__Motion__module_ga28343fd4eea11e1d7ee37435114dfc5a}\label{group__Motion__module_ga28343fd4eea11e1d7ee37435114dfc5a} 
 const Vector\+Xd {\bfseries a} = (Vector\+Xd(6) $<$$<$ 0, -\/0.\+425, -\/0.\+3922, 0, 0, 0).finished()
 \item 
-\mbox{\Hypertarget{group__Motion__module_ga31567eb6524a8b0a8420b942431ada38}\label{group__Motion__module_ga31567eb6524a8b0a8420b942431ada38}} 
+\Hypertarget{group__Motion__module_ga31567eb6524a8b0a8420b942431ada38}\label{group__Motion__module_ga31567eb6524a8b0a8420b942431ada38} 
 const Vector\+Xd {\bfseries d} = (Vector\+Xd(6) $<$$<$ 0.\+1625, 0, 0, 0.\+1333, 0.\+0997, 0.\+0996).finished()
 \item 
-\mbox{\Hypertarget{group__Motion__module_gac727100dc0a800e4b95d14bba3d100ae}\label{group__Motion__module_gac727100dc0a800e4b95d14bba3d100ae}} 
+\Hypertarget{group__Motion__module_gac727100dc0a800e4b95d14bba3d100ae}\label{group__Motion__module_gac727100dc0a800e4b95d14bba3d100ae} 
 const Vector\+Xd {\bfseries alpha} = (Vector\+Xd(6) $<$$<$ M\+\_\+\+PI / 2, 0, 0, M\+\_\+\+PI / 2, -\/M\+\_\+\+PI / 2, 0).finished()
 \item 
-\mbox{\Hypertarget{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}\label{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}} 
-const double \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}} = 0.\+1
+\Hypertarget{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}\label{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654} 
+const double {\bfseries dt} = 0.\+1
 \begin{DoxyCompactList}\small\item\em Time delta used in a single path unit. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{group__Motion__module_ga948d1209d4185ebb96a27ace68eb47d5}\label{group__Motion__module_ga948d1209d4185ebb96a27ace68eb47d5}} 
-const double \mbox{\hyperlink{group__Motion__module_ga948d1209d4185ebb96a27ace68eb47d5}{path\+\_\+dt}} = 20.\+0
+\Hypertarget{group__Motion__module_ga948d1209d4185ebb96a27ace68eb47d5}\label{group__Motion__module_ga948d1209d4185ebb96a27ace68eb47d5} 
+const double {\bfseries path\+\_\+dt} = 20.\+0
 \begin{DoxyCompactList}\small\item\em Time duration of a single path unit. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
@@ -80,11 +76,11 @@ const double \mbox{\hyperlink{group__Motion__module_ga948d1209d4185ebb96a27ace68
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}\label{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}} 
-\index{MOTION@{MOTION}!alignGripper@{alignGripper}}
+\Hypertarget{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}\index{MOTION@{MOTION}!alignGripper@{alignGripper}}
 \index{alignGripper@{alignGripper}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{alignGripper()}{alignGripper()}}
-{\footnotesize\ttfamily Matrix4d align\+Gripper (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091} 
+Matrix4d align\+Gripper (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
 
 
 
@@ -93,11 +89,11 @@ Aligns the gripper with a specific orientation.
 \begin{DoxyReturn}{Returns}
 Gripper alignment rotation matrix 
 \end{DoxyReturn}
-\mbox{\Hypertarget{group__Motion__module_gab318d3ba263e0b9f0632088ffcb43636}\label{group__Motion__module_gab318d3ba263e0b9f0632088ffcb43636}} 
-\index{MOTION@{MOTION}!almostZero@{almostZero}}
+\Hypertarget{group__Motion__module_gab318d3ba263e0b9f0632088ffcb43636}\index{MOTION@{MOTION}!almostZero@{almostZero}}
 \index{almostZero@{almostZero}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{almostZero()}{almostZero()}}
-{\footnotesize\ttfamily bool almost\+Zero (\begin{DoxyParamCaption}\item[{double}]{x }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_gab318d3ba263e0b9f0632088ffcb43636} 
+bool almost\+Zero (\begin{DoxyParamCaption}\item[{double}]{x}{}\end{DoxyParamCaption})}
 
 
 
@@ -111,11 +107,11 @@ Checks if a double value is almost zero.
 \begin{DoxyReturn}{Returns}
 True if the value is almost zero, false otherwise 
 \end{DoxyReturn}
-\mbox{\Hypertarget{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}\label{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}} 
-\index{MOTION@{MOTION}!base\_to\_world@{base\_to\_world}}
+\Hypertarget{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}\index{MOTION@{MOTION}!base\_to\_world@{base\_to\_world}}
 \index{base\_to\_world@{base\_to\_world}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{base\_to\_world()}{base\_to\_world()}}
-{\footnotesize\ttfamily Matrix4d base\+\_\+to\+\_\+world (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d} 
+Matrix4d base\+\_\+to\+\_\+world (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
 
 
 
@@ -124,29 +120,11 @@ Computes the base-\/to-\/world transformation matrix.
 \begin{DoxyReturn}{Returns}
 Base-\/to-\/world transformation matrix 
 \end{DoxyReturn}
-\mbox{\Hypertarget{group__Motion__module_ga6f6cf0de0027ede33327d8c0c442de5a}\label{group__Motion__module_ga6f6cf0de0027ede33327d8c0c442de5a}} 
-\index{MOTION@{MOTION}!calculateJacobian@{calculateJacobian}}
-\index{calculateJacobian@{calculateJacobian}!MOTION@{MOTION}}
-\doxysubsubsection{\texorpdfstring{calculateJacobian()}{calculateJacobian()}}
-{\footnotesize\ttfamily Matrix6d calculate\+Jacobian (\begin{DoxyParamCaption}\item[{Vector6d}]{th }\end{DoxyParamCaption})}
-
-
-
-Calculates the Jacobian matrix for a given set of joint angles. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em th} & Vector of joint angles \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Jacobian matrix 
-\end{DoxyReturn}
-\mbox{\Hypertarget{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}\label{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}} 
-\index{MOTION@{MOTION}!calculateTransMatrix@{calculateTransMatrix}}
+\Hypertarget{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}\index{MOTION@{MOTION}!calculateTransMatrix@{calculateTransMatrix}}
 \index{calculateTransMatrix@{calculateTransMatrix}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{calculateTransMatrix()}{calculateTransMatrix()}}
-{\footnotesize\ttfamily Matrix4d calculate\+Trans\+Matrix (\begin{DoxyParamCaption}\item[{double}]{th,  }\item[{double}]{alpha,  }\item[{double}]{distance,  }\item[{double}]{a }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d} 
+Matrix4d calculate\+Trans\+Matrix (\begin{DoxyParamCaption}\item[{double}]{th}{, }\item[{double}]{alpha}{, }\item[{double}]{distance}{, }\item[{double}]{a}{}\end{DoxyParamCaption})}
 
 
 
@@ -166,11 +144,11 @@ Calculates the homogeneous transformation matrix for a given DH parameters.
 \begin{DoxyReturn}{Returns}
 Homogeneous transformation matrix 
 \end{DoxyReturn}
-\mbox{\Hypertarget{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632}\label{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632}} 
-\index{MOTION@{MOTION}!computeDirectKin@{computeDirectKin}}
+\Hypertarget{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632}\index{MOTION@{MOTION}!computeDirectKin@{computeDirectKin}}
 \index{computeDirectKin@{computeDirectKin}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{computeDirectKin()}{computeDirectKin()}}
-{\footnotesize\ttfamily Matrix4d compute\+Direct\+Kin (\begin{DoxyParamCaption}\item[{Vector\+Xd}]{Th }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632} 
+Matrix4d compute\+Direct\+Kin (\begin{DoxyParamCaption}\item[{Vector\+Xd}]{Th}{}\end{DoxyParamCaption})}
 
 
 
@@ -184,11 +162,11 @@ Computes the direct kinematics transformation matrix.
 \begin{DoxyReturn}{Returns}
 Direct kinematics transformation matrix 
 \end{DoxyReturn}
-\mbox{\Hypertarget{group__Motion__module_gaddb52e75ac2cb1b9d098a0a8a101ac7b}\label{group__Motion__module_gaddb52e75ac2cb1b9d098a0a8a101ac7b}} 
-\index{MOTION@{MOTION}!computeJacobianCross@{computeJacobianCross}}
+\Hypertarget{group__Motion__module_gaddb52e75ac2cb1b9d098a0a8a101ac7b}\index{MOTION@{MOTION}!computeJacobianCross@{computeJacobianCross}}
 \index{computeJacobianCross@{computeJacobianCross}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{computeJacobianCross()}{computeJacobianCross()}}
-{\footnotesize\ttfamily Matrix6d compute\+Jacobian\+Cross (\begin{DoxyParamCaption}\item[{Vector6d}]{Th }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_gaddb52e75ac2cb1b9d098a0a8a101ac7b} 
+Matrix6d compute\+Jacobian\+Cross (\begin{DoxyParamCaption}\item[{Vector6d}]{Th}{}\end{DoxyParamCaption})}
 
 
 
@@ -207,25 +185,25 @@ Eigen\+::\+Matrix$<$double, 6, 6$>$ Geometric Jacobian matrix (6x6).
 \begin{DoxyNote}{Note}
 This function assumes the following\+:
 \begin{DoxyItemize}
-\item {\ttfamily \mbox{\hyperlink{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}{base\+\_\+to\+\_\+world()}}} computes the transformation matrix from the base frame to the world frame.
+\item {\ttfamily \doxylink{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}{base\+\_\+to\+\_\+world()}} computes the transformation matrix from the base frame to the world frame.
 \item {\ttfamily calculate\+Trans\+Matrix(theta, alpha, d, a)} computes the transformation matrix for a given DH parameters.
-\item {\ttfamily \mbox{\hyperlink{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}{align\+Gripper()}}} adjusts the transformation matrix for the gripper, if applicable.
+\item {\ttfamily \doxylink{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}{align\+Gripper()}} adjusts the transformation matrix for the gripper, if applicable.
 \item Joint angles {\ttfamily Th} are expected in radians.
 \end{DoxyItemize}
 
 The function computes various transformation matrices T10 to T65, constructs vectors z0 to z5 and p0 to p6, and then constructs the geometric Jacobian matrix using the cross-\/product method. 
 \end{DoxyNote}
-\mbox{\Hypertarget{group__Motion__module_ga15a678e5b8a03c47c2e03c03d8b0ed3c}\label{group__Motion__module_ga15a678e5b8a03c47c2e03c03d8b0ed3c}} 
-\index{MOTION@{MOTION}!diffInverseKinQuaternions@{diffInverseKinQuaternions}}
+\Hypertarget{group__Motion__module_ga15a678e5b8a03c47c2e03c03d8b0ed3c}\index{MOTION@{MOTION}!diffInverseKinQuaternions@{diffInverseKinQuaternions}}
 \index{diffInverseKinQuaternions@{diffInverseKinQuaternions}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{diffInverseKinQuaternions()}{diffInverseKinQuaternions()}}
-{\footnotesize\ttfamily Path diff\+Inverse\+Kin\+Quaternions (\begin{DoxyParamCaption}\item[{Vector8d}]{mr,  }\item[{Vector3d}]{f\+\_\+p,  }\item[{Quaterniond}]{f\+\_\+q }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_ga15a678e5b8a03c47c2e03c03d8b0ed3c} 
+Path diff\+Inverse\+Kin\+Quaternions (\begin{DoxyParamCaption}\item[{Vector8d}]{mr}{, }\item[{Vector3d}]{f\+\_\+p}{, }\item[{Quaterniond}]{f\+\_\+q}{}\end{DoxyParamCaption})}
 
 
 
 Perform differential inverse kinematics using quaternions for a robotic path. 
 
-This function performs differential inverse kinematics (D\+IK) using quaternions to compute the robot\textquotesingle{}s path given motion constraints and initial/final positions.
+This function performs differential inverse kinematics (DIK) using quaternions to compute the robot\textquotesingle{}s path given motion constraints and initial/final positions.
 
 
 \begin{DoxyParams}{Parameters}
@@ -240,15 +218,15 @@ This function performs differential inverse kinematics (D\+IK) using quaternions
 Path Computed robotic path.
 \end{DoxyReturn}
 \begin{DoxyNote}{Note}
-This function computes the robot\textquotesingle{}s path based on the given motion constraints {\ttfamily mr}, final position {\ttfamily f\+\_\+p}, and final orientation {\ttfamily f\+\_\+q}. It uses differential kinematics, Jacobian computation, and P\+I\+D-\/like correction to generate intermediate joint states and update the path accordingly. 
+This function computes the robot\textquotesingle{}s path based on the given motion constraints {\ttfamily mr}, final position {\ttfamily f\+\_\+p}, and final orientation {\ttfamily f\+\_\+q}. It uses differential kinematics, Jacobian computation, and PID-\/like correction to generate intermediate joint states and update the path accordingly. 
 \end{DoxyNote}
-qerr\+\_\+k = Kq $\ast$ qerr\+\_\+k.\+coeffs();
+qerr\+\_\+k = Kq \texorpdfstring{$\ast$}{*} qerr\+\_\+k.\+coeffs();
 
-Quaterniond total\+\_\+q; total\+\_\+q = qv\+\_\+k $\ast$ qerr\+\_\+k;\mbox{\Hypertarget{group__Motion__module_ga1072f53ae75faeceb25f1bec47fe243c}\label{group__Motion__module_ga1072f53ae75faeceb25f1bec47fe243c}} 
-\index{MOTION@{MOTION}!displayMatrix@{displayMatrix}}
+Quaterniond total\+\_\+q; total\+\_\+q = qv\+\_\+k \texorpdfstring{$\ast$}{*} qerr\+\_\+k;\Hypertarget{group__Motion__module_ga1072f53ae75faeceb25f1bec47fe243c}\index{MOTION@{MOTION}!displayMatrix@{displayMatrix}}
 \index{displayMatrix@{displayMatrix}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{displayMatrix()}{displayMatrix()}}
-{\footnotesize\ttfamily int display\+Matrix (\begin{DoxyParamCaption}\item[{string}]{str,  }\item[{Matrix\+Xd}]{m }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_ga1072f53ae75faeceb25f1bec47fe243c} 
+int display\+Matrix (\begin{DoxyParamCaption}\item[{string}]{str}{, }\item[{Matrix\+Xd}]{m}{}\end{DoxyParamCaption})}
 
 
 
@@ -264,17 +242,17 @@ Displays a matrix with a specified string label.
 \begin{DoxyReturn}{Returns}
 Always returns 0 
 \end{DoxyReturn}
-\mbox{\Hypertarget{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da}\label{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da}} 
-\index{MOTION@{MOTION}!getSlerp@{getSlerp}}
+\Hypertarget{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da}\index{MOTION@{MOTION}!getSlerp@{getSlerp}}
 \index{getSlerp@{getSlerp}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{getSlerp()}{getSlerp()}}
-{\footnotesize\ttfamily Quaterniond get\+Slerp (\begin{DoxyParamCaption}\item[{double}]{time,  }\item[{Quaterniond}]{q1,  }\item[{Quaterniond}]{q2 }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da} 
+Quaterniond get\+Slerp (\begin{DoxyParamCaption}\item[{double}]{time}{, }\item[{Quaterniond}]{q1}{, }\item[{Quaterniond}]{q2}{}\end{DoxyParamCaption})}
 
 
 
-Perform spherical linear interpolation (S\+L\+E\+RP) between two quaternions. 
+Perform spherical linear interpolation (SLERP) between two quaternions. 
 
-This function computes a spherical linear interpolation (S\+L\+E\+RP) between two quaternions {\ttfamily q1} and {\ttfamily q2} based on a given time parameter {\ttfamily time} and a predefined path time {\ttfamily path\+\_\+dt}.
+This function computes a spherical linear interpolation (SLERP) between two quaternions {\ttfamily q1} and {\ttfamily q2} based on a given time parameter {\ttfamily time} and a predefined path time {\ttfamily path\+\_\+dt}.
 
 
 \begin{DoxyParams}{Parameters}
@@ -291,11 +269,11 @@ Eigen\+::\+Quaterniond Interpolated quaternion.
 \begin{DoxyNote}{Note}
 The function normalizes {\ttfamily time} with respect to {\ttfamily path\+\_\+dt} to compute the interpolation. If {\ttfamily time} exceeds {\ttfamily path\+\_\+dt}, the function returns {\ttfamily q2}. 
 \end{DoxyNote}
-\mbox{\Hypertarget{group__Motion__module_ga60be8ff38c2f589bdb17bc31799bbe28}\label{group__Motion__module_ga60be8ff38c2f589bdb17bc31799bbe28}} 
-\index{MOTION@{MOTION}!insert\_new\_path\_instance@{insert\_new\_path\_instance}}
+\Hypertarget{group__Motion__module_ga60be8ff38c2f589bdb17bc31799bbe28}\index{MOTION@{MOTION}!insert\_new\_path\_instance@{insert\_new\_path\_instance}}
 \index{insert\_new\_path\_instance@{insert\_new\_path\_instance}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{insert\_new\_path\_instance()}{insert\_new\_path\_instance()}}
-{\footnotesize\ttfamily Path insert\+\_\+new\+\_\+path\+\_\+instance (\begin{DoxyParamCaption}\item[{Path}]{p,  }\item[{Vector6d}]{js,  }\item[{Vector2d}]{gs }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_ga60be8ff38c2f589bdb17bc31799bbe28} 
+Path insert\+\_\+new\+\_\+path\+\_\+instance (\begin{DoxyParamCaption}\item[{Path}]{p}{, }\item[{Vector6d}]{js}{, }\item[{Vector2d}]{gs}{}\end{DoxyParamCaption})}
 
 
 
@@ -318,39 +296,17 @@ Path Updated Path data structure with the new instance.
 \begin{DoxyNote}{Note}
 This function modifies the input Path {\ttfamily p} by adding a new row at the end, containing the provided joint values {\ttfamily js} and gripper state {\ttfamily gs}. 
 \end{DoxyNote}
-\mbox{\Hypertarget{group__Motion__module_gaad345308526d3c3a710fb90765b89a39}\label{group__Motion__module_gaad345308526d3c3a710fb90765b89a39}} 
-\index{MOTION@{MOTION}!InverseKinematics@{InverseKinematics}}
-\index{InverseKinematics@{InverseKinematics}!MOTION@{MOTION}}
-\doxysubsubsection{\texorpdfstring{InverseKinematics()}{InverseKinematics()}}
-{\footnotesize\ttfamily Matrix$<$ double, 6, 8 $>$ Inverse\+Kinematics (\begin{DoxyParamCaption}\item[{Vector3d}]{p60,  }\item[{Matrix3d}]{R60,  }\item[{double}]{scale\+Factor }\end{DoxyParamCaption})}
-
-
-
-Computes the inverse kinematics for a given end-\/effector pose. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em p60} & Position vector of the end-\/effector \\
-\hline
-{\em R60} & Orientation matrix of the end-\/effector \\
-\hline
-{\em scale\+Factor} & Scaling factor for distances \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Matrix containing the set of joint angles for all solutions 
-\end{DoxyReturn}
-\mbox{\Hypertarget{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93}\label{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93}} 
-\index{MOTION@{MOTION}!lerp@{lerp}}
+\Hypertarget{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93}\index{MOTION@{MOTION}!lerp@{lerp}}
 \index{lerp@{lerp}!MOTION@{MOTION}}
 \doxysubsubsection{\texorpdfstring{lerp()}{lerp()}}
-{\footnotesize\ttfamily Vector3d lerp (\begin{DoxyParamCaption}\item[{double}]{time,  }\item[{Vector3d}]{p1,  }\item[{Vector3d}]{p2 }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93} 
+Vector3d lerp (\begin{DoxyParamCaption}\item[{double}]{time}{, }\item[{Vector3d}]{p1}{, }\item[{Vector3d}]{p2}{}\end{DoxyParamCaption})}
 
 
 
-Perform linear interpolation (L\+E\+RP) between two 3D vectors. 
+Perform linear interpolation (LERP) between two 3D vectors. 
 
-This function computes a linear interpolation (L\+E\+RP) between two 3D vectors {\ttfamily p1} and {\ttfamily p2} based on a given time parameter {\ttfamily time} and a predefined path time {\ttfamily path\+\_\+dt}.
+This function computes a linear interpolation (LERP) between two 3D vectors {\ttfamily p1} and {\ttfamily p2} based on a given time parameter {\ttfamily time} and a predefined path time {\ttfamily path\+\_\+dt}.
 
 
 \begin{DoxyParams}{Parameters}

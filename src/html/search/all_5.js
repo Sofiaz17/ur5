@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['getslerp_15',['getSlerp',['../group__Motion__module.html#ga922c52ac5565e273e6aa99cb0f4942da',1,'motion_planner.cpp']]]
+  ['external_20node_20setting_20them_0',['need to uncomment this to be able to send joints references (leave it commented if you have an external node setting them)',['..//Users/dev/Desktop/Fondamenti della Robotica/ur5/src/task_planner/ur5_generic.py#autotoc_md0',1,'']]]
 ];

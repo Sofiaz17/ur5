@@ -1,0 +1,59 @@
+\doxysection{motion\+\_\+planner.\+h}
+\hypertarget{motion__planner_8h_source}{}\label{motion__planner_8h_source}\index{motion\_planner\_ur5/motion\_planner.h@{motion\_planner\_ur5/motion\_planner.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ \_\_MOTION\_PLANNER\_H\_\_}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ \_\_MOTION\_PLANNER\_H\_\_}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <eigen3/Eigen/Core>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <eigen3/Eigen/Dense>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <eigen3/Eigen/Geometry>}\ \textcolor{comment}{//to\ use\ quaternions}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}ros/ros.h"{}}}
+\DoxyCodeLine{00011\ \textcolor{keyword}{using\ namespace\ }Eigen;}
+\DoxyCodeLine{00012\ \textcolor{keyword}{using\ namespace\ }std;}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{typedef}\ Matrix<double,\ 6,\ 6>\ Matrix6d;}
+\DoxyCodeLine{00020\ \textcolor{keyword}{typedef}\ Matrix<double,\ 6,\ 1>\ Vector6d;}
+\DoxyCodeLine{00021\ \textcolor{keyword}{typedef}\ Matrix<double,\ 8,\ 1>\ Vector8d;}
+\DoxyCodeLine{00022\ \textcolor{keyword}{typedef}\ Matrix<double,\ 3,\ 1>\ Vector3d;}
+\DoxyCodeLine{00023\ \textcolor{keyword}{typedef}\ Matrix<double,\ Dynamic,\ 8>\ Path;}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{const}\ VectorXd\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}\ =\ (VectorXd(6)\ <<\ 0,\ -\/0.425,\ -\/0.3922,\ 0,\ 0,\ 0).finished();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{const}\ VectorXd\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}\ =\ (VectorXd(6)\ <<\ 0.1625,\ 0,\ 0,\ 0.1333,\ 0.0997,\ 0.0996).finished();\ \ \ \ \ \ \ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{const}\ VectorXd\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}\ =\ (VectorXd(6)\ <<\ M\_PI\ /\ 2,\ 0,\ 0,\ M\_PI\ /\ 2,\ -\/M\_PI\ /\ 2,\ 0).finished();\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{const}\ VectorXd\ a\ =\ (VectorXd(6)\ <<\ 0,\ -\/0.425,\ -\/0.3922,\ 0,\ 0,\ 0).finished();}
+\DoxyCodeLine{00029\ \textcolor{keyword}{const}\ VectorXd\ d\ =\ (VectorXd(6)\ <<\ 0.1625,\ 0,\ 0,\ 0.1333,\ 0.0997,\ 0.0996).finished();}
+\DoxyCodeLine{00030\ \textcolor{keyword}{const}\ VectorXd\ alpha\ =\ (VectorXd(6)\ <<\ M\_PI\ /\ 2,\ 0,\ 0,\ M\_PI\ /\ 2,\ -\/M\_PI\ /\ 2,\ 0).finished();}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}}\ =\ 0.1;\ \ \ \ \ \ \ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{group__Motion__module_ga948d1209d4185ebb96a27ace68eb47d5}{path\_dt}}\ =\ 20.0;\ }
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{group__Motion__module_gab318d3ba263e0b9f0632088ffcb43636}{almostZero}}(\textcolor{keywordtype}{double}\ x);}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__Motion__module_ga1072f53ae75faeceb25f1bec47fe243c}{displayMatrix}}(\textcolor{keywordtype}{string}\ str,\ MatrixXd\ m);}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ Matrix4d\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(\textcolor{keywordtype}{double}\ th,\ \textcolor{keywordtype}{double}\ alpha,\ \textcolor{keywordtype}{double}\ distance,\ \textcolor{keywordtype}{double}\ a);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ Matrix4d\ \mbox{\hyperlink{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}{base\_to\_world}}();}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ Matrix4d\ \mbox{\hyperlink{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}{alignGripper}}();}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ Matrix6d\ \mbox{\hyperlink{group__Motion__module_gaddb52e75ac2cb1b9d098a0a8a101ac7b}{computeJacobianCross}}(Vector6d\ th);}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ Matrix4d\ \mbox{\hyperlink{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632}{computeDirectKin}}(VectorXd\ Th);}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ Vector3d\ \mbox{\hyperlink{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93}{lerp}}(\textcolor{keywordtype}{double}\ time,\ Vector3d\ p1,\ Vector3d\ p2);}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ Quaterniond\ \mbox{\hyperlink{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da}{getSlerp}}(\textcolor{keywordtype}{double}\ time,\ Quaterniond\ q1,\ Quaterniond\ q2);}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ Path\ \mbox{\hyperlink{group__Motion__module_ga60be8ff38c2f589bdb17bc31799bbe28}{insert\_new\_path\_instance}}(Path\ p,\ Vector6d\ js,\ Vector2d\ gs);}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ Path\ \mbox{\hyperlink{group__Motion__module_ga15a678e5b8a03c47c2e03c03d8b0ed3c}{diffInverseKinQuaternions}}(Vector8d\ mr,\ Vector3d\ f\_p,\ Quaterniond\ f\_q);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

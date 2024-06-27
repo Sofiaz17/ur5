@@ -1,0 +1,291 @@
+\doxysection{motion\+\_\+planner.\+cpp}
+\hypertarget{motion__planner__ur5_2motion__planner_8cpp_source}{}\label{motion__planner__ur5_2motion__planner_8cpp_source}\index{motion\_planner\_ur5/motion\_planner.cpp@{motion\_planner\_ur5/motion\_planner.cpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#include\ "{}motion\_planner.h"{}}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <eigen3/Eigen/Core>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <eigen3/Eigen/Dense>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <eigen3/Eigen/Geometry>}\ \textcolor{comment}{//to\ use\ quaternions}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <stdexcept>}}
+\DoxyCodeLine{00009\ \textcolor{keyword}{using\ namespace\ }Eigen;}
+\DoxyCodeLine{00010\ \textcolor{keyword}{using\ namespace\ }std;}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00025\ Matrix4d\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(\textcolor{keywordtype}{double}\ th,\ \textcolor{keywordtype}{double}\ alpha,\ \textcolor{keywordtype}{double}\ distance,\ \textcolor{keywordtype}{double}\ a)}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ \ \ \ \ Matrix4d\ Tij;}
+\DoxyCodeLine{00028\ \ \ \ \ Tij\ <<\ cos(th),\ -\/sin(th)\ *\ cos(alpha),\ sin(th)\ *\ sin(alpha),\ a\ *\ cos(th),}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ sin(th),\ cos(th)\ *\ cos(alpha),\ -\/cos(th)\ *\ sin(alpha),\ a\ *\ sin(th),}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ 0,\ sin(alpha),\ cos(alpha),\ distance,}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ 0,\ 0,\ 0,\ 1;}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordflow}{return}\ Tij;}
+\DoxyCodeLine{00033\ \}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00039\ Matrix4d\ \mbox{\hyperlink{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}{base\_to\_world}}()}
+\DoxyCodeLine{00040\ \{}
+\DoxyCodeLine{00041\ \ \ \ \ Matrix4d\ roto\_trasl\_matrix;}
+\DoxyCodeLine{00042\ \ \ \ \ roto\_trasl\_matrix\ <<\ 1,\ 0,\ 0,\ 0.5,}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,\ -\/1,\ 0,\ 0.35,}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,\ 0,\ -\/1,\ 1.75,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,\ 0,\ 0,\ 1;}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordflow}{return}\ roto\_trasl\_matrix;}
+\DoxyCodeLine{00047\ \};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00053\ Matrix4d\ \mbox{\hyperlink{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}{alignGripper}}()}
+\DoxyCodeLine{00054\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ Matrix4d\ rotationMatrix;}
+\DoxyCodeLine{00056\ \ \ \ \ rotationMatrix\ <<\ 0,\ -\/1,\ 0,\ 0,}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 1,\ 0,\ 0,\ 0,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,\ 0,\ 1,\ 0,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0,\ 0,\ 0,\ 1;}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordflow}{return}\ rotationMatrix;}
+\DoxyCodeLine{00061\ \};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00068\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{group__Motion__module_gab318d3ba263e0b9f0632088ffcb43636}{almostZero}}(\textcolor{keywordtype}{double}\ x)}
+\DoxyCodeLine{00069\ \{}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordflow}{return}\ (abs(x)\ <\ 1e-\/7);}
+\DoxyCodeLine{00071\ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00079\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__Motion__module_ga1072f53ae75faeceb25f1bec47fe243c}{displayMatrix}}(\textcolor{keywordtype}{string}\ str,\ MatrixXd\ m)}
+\DoxyCodeLine{00080\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ cout\ <<\ str\ <<\ endl}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ <<\ m\ <<\ endl;}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00084\ \}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00092\ Eigen::Matrix4d\ \mbox{\hyperlink{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632}{computeDirectKin}}(VectorXd\ Th)}
+\DoxyCodeLine{00093\ \{}
+\DoxyCodeLine{00094\ \ \ \ \ Matrix4d\ TransfMatrix;}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{comment}{//\ compute\ single\ transformations}}
+\DoxyCodeLine{00096\ \ \ \ \ Matrix4d\ T10\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(0),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(0),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(0),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(0));}
+\DoxyCodeLine{00097\ \ \ \ \ Matrix4d\ T21\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(1),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(1),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(1),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(1));}
+\DoxyCodeLine{00098\ \ \ \ \ Matrix4d\ T32\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(2),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(2),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(2),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(2));}
+\DoxyCodeLine{00099\ \ \ \ \ Matrix4d\ T43\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(3),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(3),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(3),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(3));}
+\DoxyCodeLine{00100\ \ \ \ \ Matrix4d\ T54\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(4),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(4),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(4),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(4));}
+\DoxyCodeLine{00101\ \ \ \ \ Matrix4d\ T65\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(5),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(5),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(5),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(5));}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{comment}{//\ compute\ transformation\ matrix\ from\ 0\ to\ 6(T60=Tm)}}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordflow}{return}\ TransfMatrix\ =\ (T10)\ *\ (T21)\ *\ (T32)\ *\ (T43)\ *\ (T54)\ *\ (T65);}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{comment}{//\ pe\ is\ the\ end\ effector\ postion:\ it's\ coincides\ with\ the\ first\ 3\ rows\ of\ the\ last\ column(\ <3,1>\ vector)\ of\ Tm}}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{comment}{//\ pe\ =\ Tm.block<3,\ 1>(0,\ 3);\ //\ extract\ from\ row\ 0\ and\ column\ 3\ (so\ 4th\ column)\ a\ vector\ of\ 3x1\ elements}}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{comment}{//\ Re\ is\ the\ rotation\ matrix-\/-\/>3x3-\/-\/>\ first\ 3\ rows\ and\ first\ 3\ columns\ of\ Tm}}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{comment}{//\ Re\ =\ Tm.block<3,\ 3>(0,\ 0);}}
+\DoxyCodeLine{00108\ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00125\ Vector3d\ \mbox{\hyperlink{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93}{lerp}}(\textcolor{keywordtype}{double}\ time,\ Vector3d\ p1,\ Vector3d\ p2)}
+\DoxyCodeLine{00126\ \{}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{comment}{/*since\ interpolation\ evaluates\ which\ weight\ must\ be\ given\ to\ each\ vectors,}}
+\DoxyCodeLine{00128\ \textcolor{comment}{\ \ \ \ we\ need\ to\ normalize\ the\ time\ with\ reference\ to\ path\_dt*/}}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ normalizedTime\ =\ time\ /\ \mbox{\hyperlink{group__Motion__module_ga948d1209d4185ebb96a27ace68eb47d5}{path\_dt}};}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keywordflow}{if}\ (normalizedTime\ <\ 1)}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ for\ position\ we\ need\ to\ use\ linear\ interpolation\ (lerp),\ that's\ why\ the\ use\ of\ quaternion\ is\ preferred}}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (normalizedTime\ *\ p2)\ +\ ((1\ -\/\ normalizedTime)\ *\ p1);}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ p2;\ \textcolor{comment}{//\ zero\ weight\ is\ given\ to\ p1,\ since\ time\ exceed\ our\ delta}}
+\DoxyCodeLine{00136\ \}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00152\ Quaterniond\ \mbox{\hyperlink{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da}{getSlerp}}(\textcolor{keywordtype}{double}\ time,\ Quaterniond\ q1,\ Quaterniond\ q2)}
+\DoxyCodeLine{00153\ \{}
+\DoxyCodeLine{00154\ \ \ \ \ q1.normalize();}
+\DoxyCodeLine{00155\ \ \ \ \ q2.normalize();}
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ normalizedTime\ =\ time\ /\ \mbox{\hyperlink{group__Motion__module_ga948d1209d4185ebb96a27ace68eb47d5}{path\_dt}};}
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{keywordflow}{if}\ (normalizedTime\ <\ 1)}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*Returns\ the\ spherical\ linear\ interpolation\ between\ the\ two\ quaternions}}
+\DoxyCodeLine{00159\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *this\ and\ other\ at\ the\ parameter\ t\ in\ [0;1]*/}}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (q1.slerp(normalizedTime,\ q2));}
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ q2;}
+\DoxyCodeLine{00163\ \}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00184\ Matrix6d\ \mbox{\hyperlink{group__Motion__module_gaddb52e75ac2cb1b9d098a0a8a101ac7b}{computeJacobianCross}}(Vector6d\ Th)}
+\DoxyCodeLine{00185\ \{}
+\DoxyCodeLine{00186\ \ \ \ \ Matrix4d\ T10\ =\ \mbox{\hyperlink{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}{base\_to\_world}}()\ *\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(0),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(0),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(0),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(0));}
+\DoxyCodeLine{00187\ \ \ \ \ Matrix4d\ T21\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(1),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(1),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(1),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(1));}
+\DoxyCodeLine{00188\ \ \ \ \ Matrix4d\ T32\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(2),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(2),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(2),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(2));}
+\DoxyCodeLine{00189\ \ \ \ \ Matrix4d\ T43\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(3),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(3),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(3),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(3));}
+\DoxyCodeLine{00190\ \ \ \ \ Matrix4d\ T54\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(4),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(4),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(4),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(4));}
+\DoxyCodeLine{00191\ \ \ \ \ Matrix4d\ T65\ =\ \mbox{\hyperlink{group__Motion__module_gac8625fbdf5c24ef9c5270b0ce1a40b5d}{calculateTransMatrix}}(Th(5),\ \mbox{\hyperlink{group__Motion__module_ga4c14edd5555c2a92158c249fecc64bb4}{ALPHA}}(5),\ \mbox{\hyperlink{group__Motion__module_ga0cb058a665ce5cc88412e5535c612798}{D}}(5),\ \mbox{\hyperlink{group__Motion__module_gaef4180a824a150c0d584bccc407662b9}{A}}(5));}
+\DoxyCodeLine{00192\ \ \ \ \ Matrix4d\ transMatrix20;}
+\DoxyCodeLine{00193\ \ \ \ \ transMatrix20\ =\ T10\ *\ T21;}
+\DoxyCodeLine{00194\ \ \ \ \ Matrix4d\ transMatrix30;}
+\DoxyCodeLine{00195\ \ \ \ \ transMatrix30\ =\ transMatrix20\ *\ T32;}
+\DoxyCodeLine{00196\ \ \ \ \ Matrix4d\ transMatrix40;}
+\DoxyCodeLine{00197\ \ \ \ \ transMatrix40\ =\ transMatrix30\ *\ T43;}
+\DoxyCodeLine{00198\ \ \ \ \ Matrix4d\ transMatrix50;}
+\DoxyCodeLine{00199\ \ \ \ \ transMatrix50\ =\ transMatrix40\ *\ T54;}
+\DoxyCodeLine{00200\ \ \ \ \ Matrix4d\ transMatrix60;}
+\DoxyCodeLine{00201\ \ \ \ \ transMatrix60\ =\ transMatrix50\ *\ T65\ *\ \mbox{\hyperlink{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}{alignGripper}}();}
+\DoxyCodeLine{00202\ \ \ \ \ Vector3d\ z0,\ z1,\ z2,\ z3,\ z4,\ z5;}
+\DoxyCodeLine{00203\ \ \ \ \ z0\ <<\ 0,\ 0,\ -\/1;}
+\DoxyCodeLine{00204\ \ \ \ \ z1\ =\ T10.col(2).head(3);}
+\DoxyCodeLine{00205\ \ \ \ \ z2\ =\ transMatrix20.col(2).head(3);}
+\DoxyCodeLine{00206\ \ \ \ \ z3\ =\ transMatrix30.col(2).head(3);}
+\DoxyCodeLine{00207\ \ \ \ \ z4\ =\ transMatrix40.col(2).head(3);}
+\DoxyCodeLine{00208\ \ \ \ \ z5\ =\ transMatrix50.col(2).head(3);}
+\DoxyCodeLine{00209\ \ \ \ \ Vector3d\ p0,\ p1,\ p2,\ p3,\ p4,\ p5,\ p6;}
+\DoxyCodeLine{00210\ \ \ \ \ p0\ <<\ 0.5,\ 0.35,\ 1.75;}
+\DoxyCodeLine{00211\ \ \ \ \ p1\ =\ T10.col(3).head(3);}
+\DoxyCodeLine{00212\ \ \ \ \ p2\ =\ transMatrix20.col(3).head(3);}
+\DoxyCodeLine{00213\ \ \ \ \ p3\ =\ transMatrix30.col(3).head(3);}
+\DoxyCodeLine{00214\ \ \ \ \ p4\ =\ transMatrix40.col(3).head(3);}
+\DoxyCodeLine{00215\ \ \ \ \ p5\ =\ transMatrix50.col(3).head(3);}
+\DoxyCodeLine{00216\ \ \ \ \ p6\ =\ transMatrix60.col(3).head(3);}
+\DoxyCodeLine{00217\ \ \ \ \ Matrix6d\ geomJacobian;}
+\DoxyCodeLine{00218\ \ \ \ \ geomJacobian\ <<\ z0.cross(p6\ -\/\ p0),\ z1.cross(p6\ -\/\ p1),\ z2.cross(p6\ -\/\ p2),\ z3.cross(p6\ -\/\ p3),\ z4.cross(p6\ -\/\ p4),\ z5.cross(p6\ -\/\ p5),}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ z0,\ z1,\ z2,\ z3,\ z4,\ z5;}
+\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keywordflow}{return}\ geomJacobian;}
+\DoxyCodeLine{00221\ \}}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00241\ Path\ \mbox{\hyperlink{group__Motion__module_ga15a678e5b8a03c47c2e03c03d8b0ed3c}{diffInverseKinQuaternions}}(Vector8d\ mr,\ Vector3d\ f\_p,\ Quaterniond\ f\_q)}
+\DoxyCodeLine{00242\ \{}
+\DoxyCodeLine{00243\ \ \ \ \ \textcolor{comment}{//\ gs\ is\ the\ gripper\ actual\ opening}}
+\DoxyCodeLine{00244\ \ \ \ \ \textcolor{comment}{//\ js\_k\ and\ ks\_k\_dot\ are\ joints\ values\ in\ the\ instant\ k\ and\ its\ derivative\ dot\ in\ the\ same\ insatnt}}
+\DoxyCodeLine{00245\ \ \ \ \ Vector2d\ gs\{mr(6),\ mr(7)\};}
+\DoxyCodeLine{00246\ \ \ \ \ Vector6d\ js\_k,\ js\_dot\_k;}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \ \ \ \ \textcolor{comment}{//\ angular\ and\ positional\ velocities\ combined\ with\ the\ correction\ error}}
+\DoxyCodeLine{00249\ \ \ \ \ Vector6d\ fv;}
+\DoxyCodeLine{00250\ }
+\DoxyCodeLine{00251\ \ \ \ \ \textcolor{comment}{//path\ of\ the\ robot}}
+\DoxyCodeLine{00252\ \ \ \ \ Path\ path;}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \ \ \ \ \textcolor{comment}{//initial\ transformation\ matrix}}
+\DoxyCodeLine{00255\ \ \ \ \ Matrix4d\ i\_tm;}
+\DoxyCodeLine{00256\ \ \ \ \ }
+\DoxyCodeLine{00257\ \ \ \ \ \textcolor{comment}{//transformation\ matrix\ in\ the\ instant\ k\ }}
+\DoxyCodeLine{00258\ \ \ \ \ Matrix4d\ tm\_k;}
+\DoxyCodeLine{00259\ \ \ \ \ }
+\DoxyCodeLine{00260\ \ \ \ \ \textcolor{comment}{//initial\ position\ of\ the\ robot}}
+\DoxyCodeLine{00261\ \ \ \ \ Vector3d\ i\_p;}
+\DoxyCodeLine{00262\ \ \ \ \ }
+\DoxyCodeLine{00263\ \ \ \ \ \textcolor{comment}{//position\ of\ the\ robot\ in\ the\ instant\ k}}
+\DoxyCodeLine{00264\ \ \ \ \ Vector3d\ p\_k;}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \ \ \ \ \textcolor{comment}{//\ initial\ rotation\ matrix\ of\ the\ robot}}
+\DoxyCodeLine{00267\ \ \ \ \ Matrix3d\ i\_rm;}
+\DoxyCodeLine{00268\ \ \ \ \ }
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{comment}{//\ rotation\ matrix\ of\ the\ robot\ in\ the\ instant\ k}}
+\DoxyCodeLine{00270\ \ \ \ \ Matrix3d\ rm\_k;}
+\DoxyCodeLine{00271\ \ \ \ \ }
+\DoxyCodeLine{00272\ \ \ \ \ \textcolor{comment}{//quaternion\ related\ to\ the\ rotational\ matrix\ of\ the\ robot\ in\ the\ instant\ k}}
+\DoxyCodeLine{00273\ \ \ \ \ Quaterniond\ i\_q;}
+\DoxyCodeLine{00274\ \ \ \ \ }
+\DoxyCodeLine{00275\ \ \ \ \ \textcolor{comment}{//quaternion\ related\ to\ the\ rotational\ matrix\ of\ the\ robot\ in\ the\ instant\ k}}
+\DoxyCodeLine{00276\ \ \ \ \ Quaterniond\ q\_k;}
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00278\ \ \ \ \ \textcolor{comment}{//\ angular\ and\ positional\ velocities\ of\ the\ robot\ in\ the\ instant\ k}}
+\DoxyCodeLine{00279\ \ \ \ \ Vector3d\ av\_k,\ pv\_k;}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \ \ \ \ \textcolor{comment}{//\ quaternion\ velocity\ related\ to\ the\ angular\ velocity\ of\ the\ robot\ in\ the\ instant\ k}}
+\DoxyCodeLine{00282\ \ \ \ \ Quaterniond\ qv\_k;}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ \ \ \ \ \textcolor{comment}{//\ quaternion\ error\ of\ the\ rotational\ path\ (slerp)\ of\ the\ robot}}
+\DoxyCodeLine{00285\ \ \ \ \ Quaterniond\ qerr\_k;}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \ \ \ \ \textcolor{comment}{//\ positional\ error\ of\ the\ linear\ path\ (x)\ of\ the\ robot}}
+\DoxyCodeLine{00288\ \ \ \ \ Vector3d\ perr\_k;}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \ \ \ \ \textcolor{comment}{//\ geometric\ jacobian\ and\ inverse\ geometric\ jacobian\ of\ the\ robot\ in\ the\ instant\ k}}
+\DoxyCodeLine{00291\ \ \ \ \ Matrix6d\ j\_k,\ invj\_k;}
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \ \ \ \ \textcolor{comment}{//matrices\ for\ correction}}
+\DoxyCodeLine{00294\ \ \ \ \ Matrix3d\ Kp;}
+\DoxyCodeLine{00295\ \ \ \ \ Matrix3d\ Kq;}
+\DoxyCodeLine{00296\ \ \ \ \ Matrix6d\ Kjac;}
+\DoxyCodeLine{00297\ \ \ \ \ Kp\ =\ Matrix3d::Identity()\ *\ 0.01;\ \textcolor{comment}{//10}}
+\DoxyCodeLine{00298\ \ \ \ \ Kq\ =\ Matrix3d::Identity()\ *\ 0.01;\ \textcolor{comment}{//1}}
+\DoxyCodeLine{00299\ \ \ \ \ Kjac\ =\ Matrix6d::Identity()\ *\ 0.0001;}
+\DoxyCodeLine{00300\ \ \ \ \ }
+\DoxyCodeLine{00301\ \ \ \ \ \textcolor{comment}{//extract\ initial\ position\ and\ orientation}}
+\DoxyCodeLine{00302\ \ \ \ \ i\_tm\ =\ \mbox{\hyperlink{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}{base\_to\_world}}()\ *\ \mbox{\hyperlink{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632}{computeDirectKin}}(mr.head(6))\ *\ \mbox{\hyperlink{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}{alignGripper}}();}
+\DoxyCodeLine{00303\ \ \ \ \ i\_p\ =\ i\_tm.block(0,\ 3,\ 3,\ 1);}
+\DoxyCodeLine{00304\ \ \ \ \ i\_rm\ =\ i\_tm.block(0,\ 0,\ 3,\ 3);}
+\DoxyCodeLine{00305\ \ \ \ \ i\_q\ =\ i\_rm;}
+\DoxyCodeLine{00306\ \ \ \ \ }
+\DoxyCodeLine{00307\ \ \ \ \ \textcolor{comment}{//insert\ the\ starting\ point\ to\ the\ path}}
+\DoxyCodeLine{00308\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ 6;\ ++i)\ js\_k(i)\ =\ mr(i);}
+\DoxyCodeLine{00309\ \ \ \ \ path\ =\ \mbox{\hyperlink{group__Motion__module_ga60be8ff38c2f589bdb17bc31799bbe28}{insert\_new\_path\_instance}}(path,\ js\_k,\ gs);}
+\DoxyCodeLine{00310\ \ \ \ \ \textcolor{comment}{//\ compute\ the\ direct\ kinematics\ in\ the\ instant\ k}}
+\DoxyCodeLine{00311\ \ \ \ \ tm\_k\ =\ \mbox{\hyperlink{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}{base\_to\_world}}()\ *\ \mbox{\hyperlink{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632}{computeDirectKin}}(js\_k)\ *\ \mbox{\hyperlink{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}{alignGripper}}();}
+\DoxyCodeLine{00312\ \ \ \ \ p\_k\ =\ tm\_k.block(0,\ 3,\ 3,\ 1);}
+\DoxyCodeLine{00313\ \ \ \ \ rm\_k\ =\ tm\_k.block(0,\ 0,\ 3,\ 3);}
+\DoxyCodeLine{00314\ \ \ \ \ q\_k\ =\ rm\_k;}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}starting\ p:\ "{}}\ <<\ p\_k.transpose()\ <<\ \textcolor{stringliteral}{"{}\ actual\ q:\ "{}}\ <<\ q\_k.coeffs().transpose()\ <<\ std::endl;}
+\DoxyCodeLine{00317\ }
+\DoxyCodeLine{00318\ \ \ \ \ \textcolor{comment}{//each\ delta\ time\ (dt)\ compute\ the\ joints\ state\ to\ insert\ into\ the\ path\ }}
+\DoxyCodeLine{00319\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{double}\ t\ =\ 0;\ t\ <\ \mbox{\hyperlink{group__Motion__module_ga948d1209d4185ebb96a27ace68eb47d5}{path\_dt}};\ t\ +=\ \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}})\ \textcolor{comment}{//for\ (double\ t\ =\ dt;\ t\ <\ path\_dt;\ t\ +=\ dt)}}
+\DoxyCodeLine{00320\ \ \ \ \ \{}
+\DoxyCodeLine{00321\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ std::cout\ <<\ "{}\#\#\#\#\#\ t\ =\ "{}\ <<\ t\ <<\ "{}\ \#\#\#\#\#"{}\ <<\ std::endl;}}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \textcolor{comment}{//compute\ the\ direct\ kinematics\ in\ the\ instant\ k\ }}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ tm\_k\ =\ \mbox{\hyperlink{group__Motion__module_ga07c77fb44920c9747dfd073917b0c13d}{base\_to\_world}}()\ *\ \mbox{\hyperlink{group__Motion__module_gab79f6aa1fa737a2ae80ecc6cdbd54632}{computeDirectKin}}(js\_k)\ *\ \mbox{\hyperlink{group__Motion__module_gad659588b45d3adf8e6b08b55a86d7091}{alignGripper}}();}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ p\_k\ =\ tm\_k.block(0,\ 3,\ 3,\ 1);}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ rm\_k\ =\ tm\_k.block(0,\ 0,\ 3,\ 3);}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ q\_k\ =\ rm\_k;}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00328\ \textcolor{comment}{//\ \ \ \ \ \ std::cout\ <<\ "{}actual\ p:\ "{}\ <<\ p\_k.transpose()\ <<\ "{}\ actual\ q:\ "{}\ <<\ q\_k.coeffs().transpose()\ <<\ std::endl;}}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ \textcolor{comment}{//compute\ the\ velocities\ in\ the\ instant\ k}}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ pv\_k\ =\ (\mbox{\hyperlink{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93}{lerp}}(t\ +\ \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}},\ i\_p,\ f\_p)\ -\/\ \mbox{\hyperlink{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93}{lerp}}(t,\ i\_p,\ f\_p))\ /\ \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}};\ \textcolor{comment}{//pv\_k\ =\ (lerp(t,\ i\_p,\ f\_p)\ -\/\ lerp(t\ -\/\ dt,\ i\_p,\ f\_p))\ /\ dt;}}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ qv\_k\ =\ \mbox{\hyperlink{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da}{getSlerp}}(t\ +\ \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}},\ i\_q,\ f\_q)\ *\ \mbox{\hyperlink{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da}{getSlerp}}(t,\ i\_q,\ f\_q).conjugate();\ \textcolor{comment}{//qv\_k\ =\ myslerp(t,\ i\_q,\ f\_q)\ *\ myslerp(t\ -\/\ dt,\ i\_q,\ f\_q).conjugate();}}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ av\_k\ =\ (qv\_k.vec()\ *\ 2)\ /\ \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}};}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00335\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ std::cout\ <<\ "{}pv\_k:\ "{}\ <<\ pv\_k.transpose()\ <<\ "{}\ qv\_k:\ "{}\ <<\ qv\_k.coeffs().transpose()\ <<\ "{}\ av\_k:\ "{}\ <<\ av\_k.transpose()\ <<\ std::endl;}}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \textcolor{comment}{//compute\ the\ jacobian\ and\ its\ inverse\ in\ the\ instant\ k}}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ j\_k\ =\ \mbox{\hyperlink{group__Motion__module_gaddb52e75ac2cb1b9d098a0a8a101ac7b}{computeJacobianCross}}(js\_k);}
+\DoxyCodeLine{00339\ \ \ \ \ \ \ \ \ \textcolor{comment}{//invj\_k\ =\ (j\_k.transpose()\ *\ j\_k\ +\ Matrix6d::Identity()\ *\ 0.0001).inverse()\ *\ j\_k.transpose();}}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ invj\_k\ =\ j\_k.transpose()\ *\ (j\_k\ *\ j\_k.transpose()\ +\ Kjac).inverse();}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (abs(j\_k.determinant())\ <\ 0.00001)}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \ \ \ \ ROS\_WARN(\textcolor{stringliteral}{"{}Near\ singular\ configuration"{}});}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ \textcolor{comment}{//compute\ the\ errors\ in\ the\ path}}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ qerr\_k\ =\ \mbox{\hyperlink{group__Motion__module_ga922c52ac5565e273e6aa99cb0f4942da}{getSlerp}}(t,\ i\_q,\ f\_q)\ *\ q\_k.conjugate();}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ perr\_k\ =\ (\mbox{\hyperlink{group__Motion__module_ga459bafaee78fdbca28b6f8fdb06c0a93}{lerp}}(t,\ i\_p,\ f\_p)\ -\/\ p\_k)\ /\ \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}};\ \textcolor{comment}{//perr\_k\ =\ lerp(t,\ i\_p,\ f\_p)\ -\/\ p\_k;}}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ \textcolor{comment}{//compute\ the\ vector\ of\ the\ velocities\ composition\ with\ a\ parameter\ of\ correction}}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \ \ \ \ Vector3d\ aerr\_k;}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \ \ \ \ aerr\_k\ =\ (qerr\_k.vec()\ *\ 2)\ /\ \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}};}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \ \ \ \ fv\ <<\ pv\_k\ +\ (Kp\ *\ perr\_k),\ av\_k\ +\ (Kq\ *\ aerr\_k);\ \textcolor{comment}{//fv\ <<\ pv\_k\ +\ (Kp\ *\ perr\_k),\ av\_k\ +\ (Kq\ *\ qerr\_k.vec());}}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00359\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ std::cout\ <<\ "{}perr\_k:\ "{}\ <<\ perr\_k.transpose()\ <<\ "{}\ qerr\_k:\ "{}\ <<\ qerr\_k.coeffs().transpose()\ <<\ std::endl;}}
+\DoxyCodeLine{00360\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ std::cout\ <<\ "{}fv:\ "{}\ <<\ fv.transpose()\ <<\ std::endl;}}
+\DoxyCodeLine{00361\ }
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ the\ joints\ state\ in\ the\ instant\ k}}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ js\_dot\_k\ =\ invj\_k\ *\ fv;}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ js\_k\ =\ js\_k\ +\ (js\_dot\_k\ *\ \mbox{\hyperlink{group__Motion__module_ga4d2852f394c94e7eaac02e3c5b393654}{dt}});}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00366\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ std::cout\ <<\ "{}js\_dot\_k:\ "{}\ <<\ js\_dot\_k.transpose()\ <<\ std::endl\ <<\ std::endl;}}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00368\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ std::cout\ <<\ "{}target:\ "{}\ <<\ lerp(t\ +\ dt,\ i\_p,\ f\_p).transpose()\ <<\ std::endl\ <<\ std::endl;}}
+\DoxyCodeLine{00369\ }
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \textcolor{comment}{//add\ it\ to\ the\ path}}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ path\ =\ \mbox{\hyperlink{group__Motion__module_ga60be8ff38c2f589bdb17bc31799bbe28}{insert\_new\_path\_instance}}(path,\ js\_k,\ gs);}
+\DoxyCodeLine{00372\ \ \ \ \ \}}
+\DoxyCodeLine{00373\ }
+\DoxyCodeLine{00374\ \ \ \ \ \textcolor{keywordflow}{return}\ path;}
+\DoxyCodeLine{00375\ \}}
+\DoxyCodeLine{00376\ }
+\DoxyCodeLine{00377\ }
+\DoxyCodeLine{00393\ Path\ \mbox{\hyperlink{group__Motion__module_ga60be8ff38c2f589bdb17bc31799bbe28}{insert\_new\_path\_instance}}(Path\ p,\ Vector6d\ js,\ Vector2d\ gs)}
+\DoxyCodeLine{00394\ \{}
+\DoxyCodeLine{00395\ \ \ \ \ \textcolor{comment}{//\ Incrementa\ le\ dimensioni\ della\ matrice\ di\ una\ riga}}
+\DoxyCodeLine{00396\ \ \ \ \ p.conservativeResize(p.rows()\ +\ 1,\ p.cols());}
+\DoxyCodeLine{00397\ }
+\DoxyCodeLine{00398\ \ \ \ \ \textcolor{comment}{//\ Inserisci\ i\ valori\ delle\ giunture\ e\ dello\ stato\ della\ pinza\ nella\ nuova\ riga}}
+\DoxyCodeLine{00399\ \ \ \ \ p.row(p.rows()\ -\/\ 1)\ <<\ js(0),\ js(1),\ js(2),\ js(3),\ js(4),\ js(5),\ gs(0),\ gs(1);}
+\DoxyCodeLine{00400\ }
+\DoxyCodeLine{00401\ \ \ \ \ \textcolor{keywordflow}{return}\ p;}
+\DoxyCodeLine{00402\ \}}
+\DoxyCodeLine{00403\ }
+
+\end{DoxyCode}

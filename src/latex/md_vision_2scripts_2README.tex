@@ -1,0 +1,35 @@
+\chapter{README}
+\hypertarget{md_vision_2scripts_2README}{}\label{md_vision_2scripts_2README}\index{README@{README}}
+Per far partire il nodo visione usa il comando
+
+
+\begin{DoxyEnumerate}
+\item Fai partire gazebo
+\item Segui le istruzioni qui sotto\+:
+\end{DoxyEnumerate}
+
+ros\+\_\+ws =\texorpdfstring{$>$}{>} usa il tuo workspace ti catkin o ros
+
+preset 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{.\ \string~/ros\_ws/devel/setup.bash}
+\DoxyCodeLine{cd\ rosws}
+\DoxyCodeLine{catkin\_make}
+
+\end{DoxyCode}
+
+
+poi, per arrivare al file .py 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{roscd\ vision}
+\DoxyCodeLine{cd\ scripts}
+
+\end{DoxyCode}
+
+
+e infine per lanciare il nodo\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python3\ vision-\/node.py\ }
+
+\end{DoxyCode}
+ 

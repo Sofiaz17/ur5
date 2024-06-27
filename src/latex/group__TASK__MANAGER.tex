@@ -1,51 +1,29 @@
-\hypertarget{group__TASK__MANAGER}{}\doxysection{T\+A\+S\+K\+\_\+\+M\+A\+N\+A\+G\+ER}
-\label{group__TASK__MANAGER}\index{TASK\_MANAGER@{TASK\_MANAGER}}
-\doxysubsection*{Functions}
+\doxysection{TASK\+\_\+\+MANAGER}
+\hypertarget{group__TASK__MANAGER}{}\label{group__TASK__MANAGER}\index{TASK\_MANAGER@{TASK\_MANAGER}}
+\doxysubsubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-bool \mbox{\hyperlink{group__TASK__MANAGER_ga5dbf7a76968717b1bea9e45cbc257a9a}{wait\+For\+Service}} (ros\+::\+Service\+Client \&client, ur5\+::\+Get\+Brick\+Pose \&srv, int retries=10, int delay\+\_\+ms=1000)
-\begin{DoxyCompactList}\small\item\em Waits for a R\+OS service to become available, with retries and delays. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__TASK__MANAGER_ga3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char $\ast$$\ast$argv)
-\begin{DoxyCompactList}\small\item\em Main entry point for the task\+\_\+planner node. \end{DoxyCompactList}\end{DoxyCompactItemize}
+int \mbox{\hyperlink{group__TASK__MANAGER_ga3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
+\begin{DoxyCompactList}\small\item\em Waits for a ROS service to become available, with retries and delays. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{group__TASK__MANAGER_ga3c04138a5bfe5d72780bb7e82a18e627}\label{group__TASK__MANAGER_ga3c04138a5bfe5d72780bb7e82a18e627}} 
-\index{TASK\_MANAGER@{TASK\_MANAGER}!main@{main}}
+\Hypertarget{group__TASK__MANAGER_ga3c04138a5bfe5d72780bb7e82a18e627}\index{TASK\_MANAGER@{TASK\_MANAGER}!main@{main}}
 \index{main@{main}!TASK\_MANAGER@{TASK\_MANAGER}}
 \doxysubsubsection{\texorpdfstring{main()}{main()}}
-{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__TASK__MANAGER_ga3c04138a5bfe5d72780bb7e82a18e627} 
+int main (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv}{}\end{DoxyParamCaption})}
 
 
 
-Main entry point for the task\+\_\+planner node. 
-
-Initializes R\+OS node, calls necessary services for vision, desired poses, and motion planning, and manages the workflow. 
-\begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em argc} & Number of command line arguments. \\
-\hline
-\mbox{\texttt{ in}}  & {\em argv} & Array of command line arguments. \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 if successful, 1 if an error occurred. 
-\end{DoxyReturn}
-\mbox{\Hypertarget{group__TASK__MANAGER_ga5dbf7a76968717b1bea9e45cbc257a9a}\label{group__TASK__MANAGER_ga5dbf7a76968717b1bea9e45cbc257a9a}} 
-\index{TASK\_MANAGER@{TASK\_MANAGER}!waitForService@{waitForService}}
-\index{waitForService@{waitForService}!TASK\_MANAGER@{TASK\_MANAGER}}
-\doxysubsubsection{\texorpdfstring{waitForService()}{waitForService()}}
-{\footnotesize\ttfamily bool wait\+For\+Service (\begin{DoxyParamCaption}\item[{ros\+::\+Service\+Client \&}]{client,  }\item[{ur5\+::\+Get\+Brick\+Pose \&}]{srv,  }\item[{int}]{retries = {\ttfamily 10},  }\item[{int}]{delay\+\_\+ms = {\ttfamily 1000} }\end{DoxyParamCaption})}
-
-
-
-Waits for a R\+OS service to become available, with retries and delays. 
+Waits for a ROS service to become available, with retries and delays. 
 
 
 \begin{DoxyParams}[1]{Parameters}
-\mbox{\texttt{ in}}  & {\em client} & The R\+OS service client. \\
+\mbox{\texttt{ in}}  & {\em client} & The ROS service client. \\
 \hline
 \mbox{\texttt{ in}}  & {\em srv} & The service object to call. \\
 \hline
@@ -55,5 +33,17 @@ Waits for a R\+OS service to become available, with retries and delays.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-true if the service becomes available, false otherwise. 
+true if the service becomes available, false otherwise.
+\end{DoxyReturn}
+Main entry point for the task\+\_\+planner node.
+
+Initializes ROS node, calls necessary services for vision, desired poses, and motion planning, and manages the workflow. 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em argc} & Number of command line arguments. \\
+\hline
+\mbox{\texttt{ in}}  & {\em argv} & Array of command line arguments. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if successful, 1 if an error occurred. 
 \end{DoxyReturn}
